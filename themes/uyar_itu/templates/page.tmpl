@@ -1,5 +1,4 @@
 ## -*- coding: utf-8 -*-
-<%namespace name="helper" file="post_helper.tmpl"/>
 <%namespace name="pheader" file="post_header.tmpl"/>
 <%namespace name="comments" file="comments_helper.tmpl"/>
 <%namespace name="math" file="math_helper.tmpl"/>
@@ -11,8 +10,8 @@
     % else:
     <main id="content">
     % endif
-    ${pheader.html_post_header()}
     ${post.text()}
+    ${pheader.html_translations(post)}
     </main>
     %if site_has_comments and enable_comments and not post.meta('nocomments'):
         <section class="comments">
