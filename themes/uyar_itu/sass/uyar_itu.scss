@@ -39,3 +39,15 @@
 @import './picnic-6.5.2/src/plugins/dropimage/plugin';
 @import './picnic-6.5.2/src/plugins/tabs/plugin';
 @import './picnic-6.5.2/src/plugins/tooltip/plugin';
+
+nav a {
+  text-transform: lowercase;
+}
+
+nav ul {
+  display: inline-block;
+}
+
+nav li {
+  display: inline;
+}
