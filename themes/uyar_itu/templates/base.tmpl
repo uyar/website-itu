@@ -27,9 +27,7 @@ ${template_hooks['extra_head']()}
 <body>
     <a href="#content" class="sr-only sr-only-focusable">${messages("Skip to main content")}</a>
     ${header.html_header()}
-    <main id="content">
-        <%block name="content"></%block>
-    </main>
+    <%block name="content"></%block>
     ${footer.html_footer()}
     ${base.late_load_js()}
     % if date_fanciness != 0:
