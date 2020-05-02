@@ -42,6 +42,10 @@ $picnic-nav-height: 3em;
 @import './picnic-6.5.2/src/plugins/tabs/plugin';
 @import './picnic-6.5.2/src/plugins/tooltip/plugin';
 
+nav {
+  background-color: $silver;
+}
+
 nav a {
   text-transform: lowercase;
 }
@@ -50,14 +54,19 @@ nav li {
   display: inline-block;
 }
 
+nav .menu {
+  margin-top: 0;
+}
+
 main {
-  max-width: 40em;
+  max-width: 45em;
   margin: $picnic-separation auto;
   padding: $picnic-nav-height 0 $picnic-separation 0;
 }
 
 footer {
-  padding: 2 * $picnic-separation;
+  background-color: $silver;
+  padding: $picnic-separation;
 }
 
 .posttranslations {
