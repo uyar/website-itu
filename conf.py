@@ -136,14 +136,10 @@ TRANSLATIONS_PATTERN = '{path}.{lang}.{ext}'
 
 NAVIGATION_LINKS = {
     "tr": (
-        ("/blog/", "Blog"),
-        ("/arsiv.html", "Arşiv"),
-        ("/kategoriler/", "Etiketler"),
+        ("/dersler/", "Dersler"),
     ),
     "en": (
-        ("/en/blog/", "Blog"),
-        ("/en/archive.html", "Archive"),
-        ("/en/categories/", "Tags"),
+        ("/en/courses/", "Courses"),
     ),
 }
 

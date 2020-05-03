@@ -15,6 +15,7 @@ $family-sans: 'Libre Franklin', 'Helvetica', 'Arial', sans-serif;
 // Extra plugin variables
 $nav-background-color: $silver;
 $picnic-nav-height: 4em;
+$picnic-card-radius: 0.5rem;
 
 
 /* PICNIC CSS IMPORTS */
@@ -50,7 +51,7 @@ $picnic-nav-height: 4em;
 @import './plugins/nav/plugin';
 
 // @import './picnic-6.5.2/src/plugins/stack/plugin';
-// @import './picnic-6.5.2/src/plugins/card/plugin';
+@import './picnic-6.5.2/src/plugins/card/plugin';
 // @import './picnic-6.5.2/src/plugins/modal/plugin';
 
 // @import './picnic-6.5.2/src/plugins/dropimage/plugin';
@@ -58,7 +59,7 @@ $picnic-nav-height: 4em;
 // @import './picnic-6.5.2/src/plugins/tooltip/plugin';
 
 
-/* OVERRIDES */
+/* PICNIC CSS OVERRIDES */
 
 body {
   min-height: 100vh;
@@ -87,16 +88,24 @@ dt:not(:first-child) {
   margin-top: $picnic-separation;
 }
 
-div.posttranslations {
-  width: 100%;
-  font-size: 0.75em;
-  text-align: right;
-  text-transform: lowercase;
+a.pseudo.button {
+  border: 1px solid $picnic-black;
 }
 
-h3.posttranslations-intro {
-  display: none;
+.card {
+  margin-top: 2 * $picnic-separation;
 }
+
+.card header {
+  background-color: $silver;
+}
+
+.card h3 {
+  font-size: 1em;
+}
+
+
+/* SITE OVERRIDES */
 
 body.landing {
   display: flex;
@@ -110,6 +119,13 @@ body.landing main {
   align-items: center;
 }
 
-body.landing a.pseudo.button {
-  border: 1px solid $picnic-black;
+div.posttranslations {
+  width: 100%;
+  font-size: 0.75em;
+  text-align: right;
+  text-transform: lowercase;
+}
+
+h3.posttranslations-intro {
+  display: none;
 }
