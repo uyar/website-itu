@@ -7,13 +7,14 @@
 
 // Theme variables
 $silver: hsl(0, 0%, 87%);
+$picnic-primary: $silver;
 $picnic-separation: 0.6rem;
 
 // Generic plugin variables
 $family-sans: 'Libre Franklin', 'Helvetica', 'Arial', sans-serif;
 
 // Extra plugin variables
-$nav-background-color: $silver;
+$nav-background-color: $picnic-primary;
 $picnic-nav-height: 4em;
 $picnic-card-radius: 0.5rem;
 
@@ -72,7 +73,7 @@ main {
 }
 
 body > footer {
-  background-color: $silver;
+  background-color: $picnic-primary;
   padding: $picnic-separation;
 }
 
