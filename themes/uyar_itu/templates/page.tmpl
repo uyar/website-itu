@@ -1,23 +1,26 @@
-## -*- coding: utf-8 -*-
 <%namespace name="pheader" file="post_header.tmpl"/>
 <%namespace name="comments" file="comments_helper.tmpl"/>
 <%namespace name="math" file="math_helper.tmpl"/>
 <%inherit file="post.tmpl"/>
 
 <%block name="content">
-    % if post.meta('type') != 'text':
+  % if post.meta('type') != 'text':
     <main id="content" class="${post.meta('type')}">
-    % else:
+  % else:
     <main id="content">
-    % endif
+  % endif
+
     ${post.text()}
+
     ${pheader.html_translations(post)}
-    </main>
-    %if site_has_comments and enable_comments and not post.meta('nocomments'):
+
+      %if site_has_comments and enable_comments and not post.meta('nocomments'):
         <section class="comments">
-        <h2>${messages("Comments")}</h2>
-        ${comments.comment_form(post.permalink(absolute=True), post.title(), post.base_path)}
+          <h2>${messages("Comments")}</h2>
+          ${comments.comment_form(post.permalink(absolute=True), post.title(), post.base_path)}
         </section>
-    %endif
-    ${math.math_scripts_ifpost(post)}
+      %endif
+  </main>
+
+  ${math.math_scripts_ifpost(post)}
 </%block>
