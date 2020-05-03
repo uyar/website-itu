@@ -10,7 +10,7 @@ MESSAGES = {
     "Authors": "Authors",
     "Categories": "Categories",
     "Comments": "Comments",
-    "Home page": "Home page",
+    "Home": "Home",
     "LANGUAGE": "English",
     "Languages:": "Languages:",
     "More posts about %s": "More posts about %s",

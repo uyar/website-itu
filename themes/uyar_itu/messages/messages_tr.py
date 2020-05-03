@@ -10,7 +10,7 @@ MESSAGES = {
     "Authors": "Yazarlar",
     "Categories": "Kategoriler",
     "Comments": "Yorumlar",
-    "Home page": "Ana sayfa",
+    "Home": "Ana sayfa",
     "LANGUAGE": "Türkçe",
     "Languages:": "Diller:",
     "More posts about %s": "%s hakkında diğer yazılar",
