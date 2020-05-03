@@ -1,18 +1,16 @@
+$family-sans: Arial, Helvetica, sans-serif !default;
+
 * {
   box-sizing: inherit;
 }
 
 html,
 body {
-  font-family: 'Libre Franklin', 'Arial', 'Helvetica', sans-serif;
+  font-family: $family-sans;
   box-sizing: border-box;
 }
 
 body {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 100vh;
   color: $picnic-black;
   line-height: 1.5;
   background: $picnic-white;

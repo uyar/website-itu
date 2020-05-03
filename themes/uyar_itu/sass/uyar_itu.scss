@@ -1,8 +1,23 @@
 @charset "utf-8";
 
-$picnic-nav-height: 3em;
-
 @import url("https://fonts.googleapis.com/css?family=Libre+Franklin:400,700&subset=latin-ext");
+
+
+/* VARIABLES */
+
+// Theme variables
+$silver: hsl(0, 0%, 87%);
+$picnic-separation: 1rem;
+
+// Generic plugin variables
+$family-sans: 'Libre Franklin', 'Helvetica', 'Arial', sans-serif;
+
+// Extra plugin variables
+$nav-background-color: $silver;
+$picnic-nav-height: 4em;
+
+
+/* PICNIC CSS IMPORTS */
 
 // Imports the base variable styles
 @import './picnic-6.5.2/src/themes/default/theme';
@@ -32,7 +47,7 @@ $picnic-nav-height: 3em;
 @import './picnic-6.5.2/src/plugins/grid/plugin';
 
 // Extra
-@import './picnic-6.5.2/src/plugins/nav/plugin';
+@import './plugins/nav/plugin';
 
 // @import './picnic-6.5.2/src/plugins/stack/plugin';
 // @import './picnic-6.5.2/src/plugins/card/plugin';
@@ -42,34 +57,40 @@ $picnic-nav-height: 3em;
 // @import './picnic-6.5.2/src/plugins/tabs/plugin';
 // @import './picnic-6.5.2/src/plugins/tooltip/plugin';
 
-nav {
-  background-color: $silver;
-}
 
-nav a {
-  text-transform: lowercase;
-}
+/* OVERRIDES */
 
-nav li {
-  display: inline-block;
-}
-
-nav .menu {
-  margin-top: 0;
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
 }
 
 main {
   max-width: 45em;
-  margin: $picnic-separation auto;
-  padding: $picnic-nav-height 0 $picnic-separation 0;
+  margin: $picnic-nav-height auto 0 auto;
+  padding: $picnic-separation;
 }
 
-footer {
+body > footer {
   background-color: $silver;
   padding: $picnic-separation;
 }
 
-.posttranslations {
+body > header > nav li {
+  display: inline-block;
+}
+
+body > header > nav a {
+  text-transform: lowercase;
+}
+
+dt:not(:first-child) {
+  margin-top: $picnic-separation;
+}
+
+div.posttranslations {
   width: 100%;
   font-size: 0.75em;
   text-align: right;
@@ -87,8 +108,4 @@ main.landing {
 
 main.landing a.pseudo.button {
   border: 1px solid $picnic-black;
-}
-
-dt:not(:first-child) {
-  margin-top: $picnic-separation;
 }
