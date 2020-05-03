@@ -12,6 +12,7 @@
 
     ${pheader.html_translations(post)}
 
+    <h1>${post.title()}</h1>
     ${post.text()}
 
       %if site_has_comments and enable_comments and not post.meta('nocomments'):
