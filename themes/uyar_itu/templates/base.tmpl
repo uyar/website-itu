@@ -25,7 +25,11 @@ ${set_locale(lang)}
   ${template_hooks['extra_head']()}
 </head>
 
-<body>
+% if post and post.meta('type') != 'text':
+  <body class="${post.meta('type')}">
+% else:
+  <body>
+% endif
   <a href="#content" class="sr-only sr-only-focusable">${messages("Skip to main content")}</a>
 
   ${header.html_header()}

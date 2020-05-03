@@ -61,9 +61,6 @@ $picnic-nav-height: 4em;
 /* OVERRIDES */
 
 body {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   min-height: 100vh;
 }
 
@@ -101,12 +98,18 @@ h3.posttranslations-intro {
   display: none;
 }
 
-main.landing {
+body.landing {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+body.landing main {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-main.landing a.pseudo.button {
+body.landing a.pseudo.button {
   border: 1px solid $picnic-black;
 }

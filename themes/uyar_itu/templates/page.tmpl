@@ -4,12 +4,7 @@
 <%inherit file="post.tmpl"/>
 
 <%block name="content">
-  % if post.meta('type') != 'text':
-    <main id="content" class="${post.meta('type')}">
-  % else:
-    <main id="content">
-  % endif
-
+  <main id="content">
     ${pheader.html_translations(post)}
 
     <h1>${post.title()}</h1>
