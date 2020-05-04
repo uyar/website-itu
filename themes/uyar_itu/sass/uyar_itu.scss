@@ -81,6 +81,11 @@ body > header > nav li {
   display: inline-block;
 }
 
+th {
+  color: $picnic-black;
+  font-weight: 400;
+}
+
 body > header > nav a {
   text-transform: lowercase;
 }
@@ -118,6 +123,10 @@ body.landing main {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+body.landing main p {
+  text-align: center;
 }
 
 div.posttranslations {
