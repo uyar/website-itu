@@ -37,3 +37,20 @@ courses:
     slides: https://www.slideshare.net/uyar/tag/blg458e
 ---
 <a href="../senior-projects/" class="pseudo button">Senior projects</a>
+
+{{% template %}}
+  % for course in post.meta('courses'):
+    <article class="card">
+      <header>
+        <h3>${course['title']}</h3>
+      </header>
+      <p>${course['description']}</p>
+      <footer>
+        <a href="${course['link']}" class="pseudo button">${messages("Catalog page", lang)}</a>
+        % if 'slides' in course:
+          <a href="${course['slides']}" class="pseudo button">${messages("Slides", lang)}</a>
+        % endif
+      </footer>
+    </article>
+  % endfor
+{{% /template %}}
