@@ -31,7 +31,6 @@
 </%block>
 
 <%block name="content">
-<main id="content">
   <article class="post-${post.meta('type')} h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article">
     ${pheader.html_post_header()}
 
@@ -54,7 +53,6 @@
     % endif
     ${math.math_scripts_ifpost(post)}
   </article>
-</main>
 
-${comments.comment_link_script()}
+  ${comments.comment_link_script()}
 </%block>

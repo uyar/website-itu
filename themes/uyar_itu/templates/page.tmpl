@@ -4,19 +4,17 @@
 <%inherit file="post.tmpl"/>
 
 <%block name="content">
-  <main id="content">
-    ${pheader.html_translations(post)}
+  ${pheader.html_translations(post)}
 
-    <h1>${post.title()}</h1>
-    ${post.text()}
+  <h1>${post.title()}</h1>
+  ${post.text()}
 
-    %if site_has_comments and enable_comments and not post.meta('nocomments'):
-      <section class="comments">
-        <h2>${messages("Comments")}</h2>
-        ${comments.comment_form(post.permalink(absolute=True), post.title(), post.base_path)}
-      </section>
-    %endif
-  </main>
+  %if site_has_comments and enable_comments and not post.meta('nocomments'):
+    <section class="comments">
+      <h2>${messages("Comments")}</h2>
+      ${comments.comment_form(post.permalink(absolute=True), post.title(), post.base_path)}
+    </section>
+  %endif
 
   ${math.math_scripts_ifpost(post)}
 </%block>
