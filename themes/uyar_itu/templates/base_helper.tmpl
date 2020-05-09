@@ -21,11 +21,11 @@ lang="${lang}">
     %if description:
         <meta name="description" content="${description|h}">
     %endif
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     %if title == blog_title:
         <title>${blog_title|h}</title>
     %else:
-        <title>${title|h} | ${blog_title|h}</title>
+        <title>${blog_title|h} — ${title|h}</title>
     %endif
 
     ${html_stylesheets()}
@@ -104,6 +104,7 @@ lang="${lang}">
         <link href="/assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
         <link href="/assets/css/code.css" rel="stylesheet" type="text/css">
         <link href="/assets/css/theme.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/uyar_itu.css" rel="stylesheet" type="text/css">
         %if has_custom_css:
             <link href="/assets/css/custom.css" rel="stylesheet" type="text/css">
         %endif
