@@ -1,0 +1,68 @@
+tr:
+  - title: Introduction to Information Systems
+    description: >
+      Belge işleme, HTML/CSS, resim işleme. Veri işleme. Programlamaya giriş.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/10632/blg-101e/
+  - title: Introduction to Scientific and Engineering Computation
+    description: >
+      Algoritmalar. Denetim akışı.
+      Türetilmiş veri tipleri, vektörel veri tipleri. Soyutlama.
+      Temel giriş/çıkış işlemleri. Basit sayısal yöntemler.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/9897/blg-102e/
+  - title: Discrete Mathematics
+    description: >
+      Sayma. Önermeler, yüklemler, tanıtlama yöntemleri.
+      Kümeler, bağıntılar, fonksiyonlar. Çizgeler, ağaçlar. Cebirsel yapılar.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/142/blg-112e/
+    slides: https://www.slideshare.net/uyar/tag/blg112e
+  - title: Database Systems
+    description: >
+      Bağıntı modeli, SQL. Uygulama geliştirme, nesne-bağıntı eşleştirmesi.
+      Normalizasyon, varlık-ilişki modeli. Eşzamanlı çalışma. NoSQL.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/10665/blg-317e/
+    slides: https://www.slideshare.net/uyar/tag/blg361e
+  - title: System Programming
+    description: >
+      İşletim sistemi çekirdeği, çekirdek modülleri, aygıt sürücüler.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/144/blg-413e/
+  - title: Functional Programming
+    description: >
+      Rekürsiyon. Cebirsel veri tipleri, kalıp eşleştirme.
+      Yüksek mertebeden fonksiyonlar.
+      Fonksiyonel veri yapıları, üşengeç hesaplama. Monadlar.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/3298/blg-458e/
+    slides: https://www.slideshare.net/uyar/tag/blg458e
+en:
+  - title: Introduction to Information Systems
+    description: >
+      Document processing, HTML/CSS, image processing.
+      Data processing. Introduction to programming.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/10632/blg-101e/
+  - title: Introduction to Scientific and Engineering Computation
+    description: >
+      Algorithms. Control flow. Derived data types, vector data types.
+      Abstraction. Basic input/output operations. Simple numerical methods.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/9897/blg-102e/
+  - title: Discrete Mathematics
+    description: >
+      Counting. Propositions, predicates, proofs.
+      Sets, relations, functions. Graphs, trees. Algebraic structures.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/142/blg-112e/
+    slides: https://www.slideshare.net/uyar/tag/blg112e
+  - title: Database Systems
+    description: >
+      Bağıntı modeli, SQL. Uygulama geliştirme, nesne-bağıntı eşleştirmesi.
+      Normalizasyon, varlık-ilişki modeli. Eşzamanlı çalışma. NoSQL.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/10665/blg-317e/
+    slides: https://www.slideshare.net/uyar/tag/blg361e
+  - title: System Programming
+    description: >
+      Operating system kernel, kernel modules, device drivers.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/144/blg-413e/
+  - title: Functional Programming
+    description: >
+      Recursion. Algebraic data types, pattern matching.
+      Higher order functions. Functional data structures, lazy evaluation.
+      Monads.
+    link: http://ninova.itu.edu.tr/en/courses/faculty-of-computer-and-informatics/3298/blg-458e/
+    slides: https://www.slideshare.net/uyar/tag/blg458e
