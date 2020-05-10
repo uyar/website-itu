@@ -1,0 +1,7 @@
+{
+  "name": "uyar_itu",
+  "version": "1.0.0",
+  "devDependencies": {
+    "node-sass": "^4.13.1"
+  }
+}

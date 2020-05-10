@@ -92,4 +92,5 @@ ENV/
 .doit.db
 cache/
 output/
+node_modules/
 .sass-cache/
