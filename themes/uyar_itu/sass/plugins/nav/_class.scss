@@ -38,10 +38,10 @@ $nav-background-color: #fff !default;
   .brand,
   .menu,
   .burger {
-    float: right;
+    float: left;
 
     position: relative;
-    top: 50%;
+    top: 25%;
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
   }

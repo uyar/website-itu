@@ -2,9 +2,8 @@
 <%namespace name="base" file="base_helper.tmpl" import="*"/>
 
 <%def name="html_header()">
-    <header id="header">
+    <header>
         ${html_site_title()}
-        ${html_translation_header()}
         ${html_navigation_links()}
         %if search_form:
             <div class="searchform" role="search">
@@ -16,7 +15,7 @@
 </%def>
 
 <%def name="html_site_title()">
-    <h1 id="brand"><a href="${abs_link(_link("root", None, lang))}" title="${blog_title|h}" rel="home">
+    <h1><a href="${abs_link(_link("root", None, lang))}" title="${blog_title|h}" rel="home">
     %if logo_url:
         <img src="${logo_url}" alt="${blog_title|h}" id="logo">
     %endif
@@ -28,8 +27,8 @@
 </%def>
 
 <%def name="html_navigation_links()">
-    <nav id="menu">
-    <ul>
+    <nav aria-label="main navigation">
+    <ul class="menu">
     ${html_navigation_links_entries(navigation_links)}
     ${html_navigation_links_entries(navigation_alt_links)}
     ${template_hooks['menu']()}
