@@ -1,0 +1,13 @@
+; css bundles
+assets/css/all.css=
+    theme.css,
+    uyar_itu.css,
+assets/css/all-nocdn.css=
+    theme.css,
+    uyar_itu.css,
+
+; javascript bundles
+assets/js/all.js=
+    fancydates.js,
+assets/js/all-nocdn.js=
+    fancydates.js,
