@@ -1,1 +1,14 @@
+<%namespace name="helper" file="post_helper.tmpl"/>
+<%namespace name="pheader" file="post_header.tmpl"/>
+<%namespace name="comments" file="comments_helper.tmpl"/>
+<%namespace name="math" file="math_helper.tmpl"/>
 <%inherit file="story.tmpl"/>
+
+<%block name="content">
+    ${pheader.html_title()}
+    ${post.text()}
+    ${helper.html_comments(post)}
+    ${math.math_scripts_ifpost(post)}
+</article>
+${comments.comment_link_script()}
+</%block>
