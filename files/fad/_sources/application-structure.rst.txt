@@ -1,0 +1,303 @@
+Application Structure
+=====================
+
+The pages in a web application share some components such as headers, footers
+and navigation panels. In this chapter, we'll see how to implement such
+components without repeating code. We'll create a base template that will
+contain the components that all pages in the application will include.
+See :numref:`fig_structure_homepage` for the screenshot of the resulting
+home page.
+
+.. _fig_structure_homepage:
+.. figure:: ./figures/structure_homepage.*
+   :align: center
+   :alt: Screenshot of home page with navigation panel and footer.
+
+   Home page containing navigation panel and footer.
+
+
+Base Templates
+--------------
+
+Manually adding shared components to multiple pages in an application
+is tedious and error-prone. We would prefer to write these once and let pages
+get them from a shared location. For instance, we want all pages to use
+the same footer that contains a copyright notice but we don't want to add
+the footer markup to every page separately. Instead, we want to add it
+to a base template and derive all pages from this base template.
+
+We'll store our base template in the :file:`layout.html` file with the contents
+given in :numref:`lst_layout_v0201`.
+
+.. _lst_layout_v0201:
+.. literalinclude:: ../../app/v0201/templates/layout.html
+   :caption: Initial base template
+             (file: :file:`templates/layout.html`, version: ``v0201``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 5, 9
+
+The ``{% block ... %}`` and ``{% endblock %}`` directives in Jinja mark
+the parts that will be filled in by the pages that use this base template.
+Since there can be more than one such block in a template, blocks have to be
+named so that they can be distinguished from each other. The name is
+the identifier that follows the ``block`` keyword in the opening directive.
+
+All remaining parts will be directly included. This means that there are
+two parts in this template that will be filled in by pages:
+
+- The block named ``title`` marks the page title after the common prefix
+  (line 5).
+
+- The block named ``content`` marks the page content (line 9). Note that
+  the footer is not part of the block, so it will be included in all
+  pages (lines 11-13).
+
+Now the home page template will extend this base template
+(:numref:`lst_home_v0201`, line 1). The ``title`` block (line 2) will replace
+the ``title`` slot in the layout, and the ``content`` block (lines between
+3 and 10) will replace the ``content`` slot. When processed, this template will
+give the same markup as the previous one without the base template
+(:numref:`lst_home_v0104`).
+
+.. _lst_home_v0201:
+.. literalinclude:: ../../app/v0201/templates/home.html
+   :caption: Home page template extending the base template
+             (file: :file:`templates/home.html`, version: ``v0201``).
+   :language: html
+   :linenos:
+
+Let's also add the following rule to the style sheet to format the footer:
+
+.. literalinclude:: ../../app/v0201/static/mymovies.css
+   :language: css
+   :lines: 5-7
+
+
+URL Generation
+--------------
+
+In our HTML markup we've used fixed routes when writing links to pages:
+
+- ``/`` for the home page
+- ``/movies`` for the movies page
+- ``/static/mymovies.css`` for the style sheet
+
+These routes assume that all our URLs start from the base of the server URL
+(``http://localhost:8080``). But in some cases -for example if we want to run
+multiple applications on the same port- we may want our application URLs
+to start from a subpath on the server, like ``http://localhost:8080/myapp``.
+So we would want our URLs to be:
+
+- ``http://localhost:8080/myapp/``
+- ``http://localhost:8080/myapp/movies``
+- ``http://localhost:8080/myapp/static/mymovies.css``
+
+But using fixed routes wouldn't work in this case because for example
+``/movies`` would always link to ``http://localhost:8080/movies``.
+
+We can solve this issue using a Flask function called ``url_for`` which lets us
+look up the URL of a page in the application. Routing rules consist of three
+components:
+
+#. The route in the application, e.g. ``/movies``.
+#. The view function that will handle the requests to this route,
+   e.g. ``movies_page``.
+#. The name of the *endpoint*, which is an identifier for the route.
+   If not given, this will be the same as the name of the view function,
+   e.g. ``movies_page``. [#route_endpoint]_
+
+So for example, instead of writing the URL for the movies page as ``/movies``,
+we call the ``url_for`` function and give it the endpoint name
+(``movies_page``) to get its URL (:numref:`lst_home_v0202`, line 8).
+
+.. _lst_home_v0202:
+.. literalinclude:: ../../app/v0202/templates/home.html
+   :caption: Home page template with URL generation
+             (file: :file:`templates/home.html`, version: ``v0202``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 8
+
+For static files, we have to use the endpoint name ``static`` and give
+the relative path of the requested file (:numref:`lst_layout_v0202`,
+lines 6-7).
+
+.. _lst_layout_v0202:
+.. literalinclude:: ../../app/v0202/templates/layout.html
+   :caption: Base template with URL generation for static files
+             (file: :file:`templates/layout.html`, version: ``v0202``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 6-7
+
+Another improvement concerns the navigation. We might need links
+to the home page or the movie list page from many pages in the application.
+So, having a global navigation mechanism where all such links will be available
+in all pages would be a good idea.
+
+We'll add the navigation links as part of a header section in our base
+template (:numref:`lst_layout_v0203`, lines 10-17).
+
+.. _lst_layout_v0203:
+.. literalinclude:: ../../app/v0203/templates/layout.html
+   :caption: Base template with navigation links
+             (file: :file:`templates/layout.html`, version: ``v0203``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 10-17
+
+Now the home page doesn't need to add the navigation links anymore
+(:numref:`lst_home_v0203`).
+
+.. _lst_home_v0203:
+.. literalinclude:: ../../app/v0203/templates/home.html
+   :caption: Home page template that gets navigation links from base template
+             (file: :file:`templates/home.html`, version: ``v0203``).
+   :language: html
+   :diff: ../../app/v0202/templates/home.html
+   :linenos:
+
+
+.. admonition:: Exercise 1
+
+   Arrange the movie list page so that it will use the same navigation panel
+   and footer. (:ref:`Solution <solutions_structure_layout>`)
+
+
+.. admonition:: Exercise 2
+
+   Add `Bulma <https://bulma.io/>`_ to your base template and arrange
+   your pages to use it. Try to achieve a screenshot as given in
+   :numref:`fig_solutions_bulma`. (:ref:`Solution <solutions_structure_bulma>`)
+
+   .. _fig_solutions_bulma:
+   .. figure:: ./figures/solutions_bulma.*
+     :align: center
+     :alt: Screenshot of home page with Bulma.
+
+     Home page using Bulma.
+
+
+Code Structure
+--------------
+
+As the project gets larger, we will want to separate the code into multiple
+source files. For example, in our application, it might be a good idea
+to move the view functions into a separate module, as given
+in :numref:`lst_views_v0204`.
+
+.. _lst_views_v0204:
+.. literalinclude:: ../../app/v0204/views.py
+   :caption: Module that contains the view functions
+             (file: :file:`views.py`, version: ``v0204``).
+   :language: python
+   :linenos:
+
+Now the question is, how do we register the routes in the application?
+One way would be to import the ``app`` variable from the ``server.py`` module
+and use the ``route`` decorator as before:
+
+.. code-block:: python
+
+   from server import app
+
+   @app.route("/")
+   def home_page():
+       ...
+
+   @app.route("/movies")
+   def movies_page():
+       ...
+
+If you don't like using global variables this way, you can use
+the ``add_url_rule`` method of the application instance when creating
+the application. It's also a good idea to handle application creation
+as a separate function instead of defining a global variable
+(:numref:`lst_server_v0204`, lines 6-12 and 16).
+
+
+.. _lst_server_v0204:
+.. literalinclude:: ../../app/v0204/server.py
+   :caption: Server module for application setup
+             (file: :file:`server.py`, version: ``v0204``).
+   :language: python
+   :linenos:
+   :emphasize-lines: 9-10
+
+
+Application Configuration
+-------------------------
+
+Flask application instances keep their configuration as a mapping
+in an instance member named ``config``. For example, the application can be
+configured to run in debug mode using the ``DEBUG`` key (line 3), in which case
+the corresponding parameter isn't needed in the ``run`` method anymore
+(line 8):
+
+.. code-block:: python
+   :linenos:
+   :emphasize-lines: 3, 8
+
+   def create_app():
+       app = Flask(__name__)
+       app.config["DEBUG"] = True
+       ...
+
+   if __name__ == "__main__":
+       app = create_app()
+       app.run(host="0.0.0.0", port=8080)
+
+You can also add your own settings to this mapping. For example, you can
+make the port number a configuration setting (line 4), get its value or
+an optional default (line 9) and use it (line 10):
+
+.. code-block:: python
+   :linenos:
+   :emphasize-lines: 4, 9, 10
+
+   def create_app():
+       app = Flask(__name__)
+       app.config["DEBUG"] = True
+       app.config["PORT"] = 8080
+       ...
+
+   if __name__ == "__main__":
+       app = create_app()
+       port = app.config.get("PORT", 5000)
+       app.run(host="0.0.0.0", port=port)
+
+It's common practice to keep the configuration in a separate file. Flask
+allows you to load the configuration from a Python source file. For example,
+let us create a :file:`settings.py` file (:numref:`lst_settings_v0205`)
+and put these settings into it:
+
+.. _lst_settings_v0205:
+.. literalinclude:: ../../app/v0205/settings.py
+   :caption: Settings file with debug mode and port
+             (file: :file:`settings.py`, version: ``v0205``).
+   :language: python
+   :linenos:
+
+Now use this file to configure the application (:numref:`lst_server_v0205`,
+line 8):
+
+.. _lst_server_v0205:
+.. literalinclude:: ../../app/v0205/server.py
+   :caption: Application configured through settings file
+             (file: :file:`server.py`, version: ``v0205``).
+   :language: python
+   :linenos:
+   :emphasize-lines: 8
+
+
+.. [#route_endpoint]
+
+   When using the ``@route`` decorator, you can use the ``endpoint`` parameter
+   to change the endpoint name:
+
+   .. code-block:: python
+
+      @app.route("/movies", endpoint="movies_endpoint")
+      def movies_page():
+          ...

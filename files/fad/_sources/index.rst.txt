@@ -1,0 +1,74 @@
+=============================
+Flask Application Development
+=============================
+
+:Author: H\. Turgut Uyar
+
+:Copyright: © 2015-2018, H\. Turgut Uyar
+
+:License:
+
+   This work is licensed under a "Creative Commons
+   Attribution-NonCommercial-ShareAlike 4.0 International License".
+
+   For more information, please visit:
+
+   https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+   .. note::
+
+      You are free to:
+
+      * Share -- copy and redistribute the material in any medium or format
+
+      * Adapt -- remix, transform, and build upon the material
+
+      Under the following terms:
+
+      * Attribution -- You must give appropriate credit, provide a link
+        to the license, and indicate if changes were made.
+
+      * NonCommercial -- You may not use the material for commercial purposes.
+
+      * ShareAlike -- If you remix, transform, or build upon the material,
+        you must distribute your contributions under the same license
+        as the original.
+
+:Releases:
+
+   v2.0 - Unreleased
+
+      - Removed blueprints.
+      - Used Bulma instead of Bootstrap.
+      - Reorganized the logins chapter.
+
+   v1.1 - October 2016
+
+      - Added more narrative.
+      - Updated examples.
+      - Used better application structuring practices.
+      - Added section on input validation.
+      - Added chapter on logins.
+
+   v1.0 - October 2015
+
+--------------------
+
+This tutorial aims to demonstrate how to build an application using the Flask
+web framework. You can find more information about the Flask project on its
+web site:
+
+http://flask.pocoo.org/
+
+--------------------
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   basics
+   application-structure
+   data-model
+   forms
+   logins
+   solutions

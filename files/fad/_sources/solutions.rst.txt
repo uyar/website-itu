@@ -1,0 +1,228 @@
+Solutions to Exercises
+======================
+
+Chapter: :doc:`basics`
+----------------------
+
+.. _solutions_basics_link:
+
+.. admonition:: Exercise 1
+
+   Add a link from the movie list page to the home page.
+
+.. _lst_movies_v0104a:
+.. literalinclude:: ../../app/v0104a/templates/movies.html
+   :caption: Movie list template with link to the home page
+             (file: :file:`templates/movies.html`, version: ``v0104a``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 11-13
+
+
+Chapter: :doc:`application-structure`
+-------------------------------------
+
+.. _solutions_structure_layout:
+
+.. admonition:: Exercise 1
+
+   Arrange the movie list page so that it will use the same navigation panel
+   and footer.
+
+.. _lst_movies_v0203a:
+.. literalinclude:: ../../app/v0203a/templates/movies.html
+   :caption: Movie list template with navigation and footer
+             (file: :file:`templates/movies.html`, version: ``v0203a``).
+   :language: html
+   :linenos:
+
+
+.. _solutions_structure_bulma:
+
+.. admonition:: Exercise 2
+
+   Add `Bulma <https://bulma.io/>`_ to your base template and arrange
+   your pages to use it.
+
+.. _lst_layout_v0203b:
+.. literalinclude:: ../../app/v0203b/templates/layout.html
+   :caption: Base template using Bulma
+             (file: :file:`templates/layout.html`, version: ``v0203b``).
+   :language: html
+   :linenos:
+
+.. _lst_home_v0203b:
+.. literalinclude:: ../../app/v0203b/templates/home.html
+   :caption: Home page template using Bulma
+             (file: :file:`templates/home.html`, version: ``v0203b``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 7-8
+
+.. _lst_movies_v0203b:
+.. literalinclude:: ../../app/v0203b/templates/movies.html
+   :caption: Movie list page template using Bulma
+             (file: :file:`templates/movies.html`, version: ``v0203b``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 4
+
+.. _lst_style_v0203b:
+.. literalinclude:: ../../app/v0203b/static/mymovies.css
+   :caption: Style sheet adjustment for Bulma
+             (file: :file:`static/mymovies.css`, version: ``v0203b``).
+   :language: css
+   :diff: ../../app/v0203a/static/mymovies.css
+   :linenos:
+
+
+Chapter: :doc:`data-model`
+--------------------------
+
+.. _solutions_model_links:
+
+.. admonition:: Exercise 1
+
+   Organize the movie list page so that the entries are links to pages
+   that will display the selected movie.
+
+.. _lst_movies_v0302a:
+.. literalinclude:: ../../app/v0302a/templates/movies.html
+   :caption: Movie list page template with links to movie pages
+             (file: :file:`templates/movies.html`, version: ``v0302a``).
+   :language: html
+   :diff: ../../app/v0302/templates/movies.html
+   :linenos:
+
+
+.. _solutions_model_not_found:
+
+.. admonition:: Exercise 2
+
+   Organize the code so that if a movie with the given key doesn't exist
+   the application will generate an HTTP "Not Found" (404) error.
+
+.. _lst_movies_v0302b:
+.. literalinclude:: ../../app/v0302b/views.py
+   :caption: Movie view function that generates the 404 error if
+             movie key is not found (file: :file:`views.py`,
+             version: ``v0302b``).
+   :language: html
+   :diff: ../../app/v0302a/views.py
+   :linenos:
+
+Chapter: :doc:`forms`
+----------------------
+
+.. _solutions_forms_edit:
+
+.. admonition:: Exercise 1
+
+   Add a link to the movie display page which, when clicked, will take the user
+   to the movie edit page. The URL of the edit page has to have the extra path
+   ``/edit`` after the movie display page URL. That means, for example,
+   the edit page of movie with key 1 has to be ``/movies/1/edit``.
+   After saving, the movie has to be updated in the collection, and not added
+   a second time.
+
+Add the URL rule for the movie edit page:
+
+.. _lst_server_v0402a:
+.. literalinclude:: ../../app/v0402a/server.py
+   :caption: App creation with new URL rule for movie editing
+             (file: :file:`server.py`, version: ``v0402a``).
+   :language: python
+   :lines: 12-24
+   :linenos:
+   :emphasize-lines: 6-10
+
+Add the link for the edit page to the movie page template:
+
+.. _lst_movie_v0402a:
+.. literalinclude:: ../../app/v0402a/templates/movie.html
+   :caption: Movie template with link to edit page
+             (file: :file:`templates/movie.html`, version: ``v0402a``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 21-22
+
+We want to use the same template as the one for adding a new movie, but
+in its current implementation, the template always shows an empty form.
+This is correct for the new movie case, but if we're editing an existing
+movie, we need to be able to send the movie data to the template. We can
+achieve this by adding ``value`` attributes to the input boxes that will be
+set using the received data (the ``values`` dictionary).
+
+.. _lst_movie_edit_v0402a:
+.. literalinclude:: ../../app/v0402a/templates/movie_edit.html
+   :caption: Movie edit form with default values
+             (file: :file:`templates/movie_edit.html`, version: ``v0402a``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 10-11, 18-20
+
+The view function for adding a new movie now sends empty data to the template
+(lines 3-9) whereas the edit page handler gets the movie data from the database
+and sends that (lines 21-31):
+
+.. _lst_views_v0402a:
+.. literalinclude:: ../../app/v0402a/views.py
+   :caption: Movie add page handler for updated template
+             (file: :file:`views.py`, version: ``v0402a``).
+   :language: python
+   :lines: 35-
+   :linenos:
+   :emphasize-lines: 3-9, 21-31, 37
+
+Finally, for the update operation in the view function (line 37 above),
+we have to implement the movie update operation in the database:
+
+.. _lst_database_v0402a:
+.. literalinclude:: ../../app/v0402a/database.py
+   :caption: Database class with movie update operation
+             (file: :file:`database.py`, version: ``v0402a``).
+   :language: python
+   :diff: ../../app/v0402/database.py
+   :linenos:
+
+.. _solutions_forms_wtf:
+
+.. admonition:: Exercise 2
+
+   Replace the input validation mechanism with an implementation that uses
+   the ``Flask-WTF`` plugin. Also make use of its CSRF protection features.
+   For handling ``number`` type inputs, use the ``wtforms_components`` package.
+
+Install ``Flask-WTF`` and ``wtforms_components``. On your setup, you might
+need to put these into the :file:`requirements.txt` file.
+
+.. _lst_form_v0403a:
+.. literalinclude:: ../../app/v0403a/forms.py
+   :caption: Movie edit form class with validation
+             (file: :file:`forms.py`, version: ``v0403a``).
+   :language: python
+   :linenos:
+
+.. _lst_views_v0403a:
+.. literalinclude:: ../../app/v0403a/views.py
+   :caption: Handlers for WTF forms
+             (file: :file:`views.py`, version: ``v0403a``).
+   :language: python
+   :lines: 36-
+   :linenos:
+
+.. _lst_settings_v0403a:
+.. literalinclude:: ../../app/v0403a/settings.py
+   :caption: Setting for CSRF and cookie protection
+             (file: :file:`settings.py`, version: ``v0403a``).
+   :language: python
+   :linenos:
+   :emphasize-lines: 3-4
+
+.. _lst_movie_edit_v0403a:
+.. literalinclude:: ../../app/v0403a/templates/movie_edit.html
+   :caption: Movie editing template for WTF forms
+             (file: :file:`templates/movie_edit.html.py`, version: ``v0403a``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 7, 11-17, 23-29

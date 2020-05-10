@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>6. Persistence &mdash; Flask Tutorial</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="7. Solutions to Exercises" href="solutions.html" />
+    <link rel="prev" title="5. Logins" href="logins.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Flask Application Development
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="basics.html">1. Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="application-structure.html">2. Application Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-model.html">3. Data Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="forms.html">4. Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logins.html">5. Logins</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6. Persistence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solutions.html">7. Solutions to Exercises</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Flask Application Development</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>6. Persistence</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="persistence">
+<h1>6. Persistence<a class="headerlink" href="#persistence" title="Permalink to this headline">¶</a></h1>
+<p>A major problem with the application as implemented so far is that the data
+entered by the user do not persist. At each run, the application starts
+with an empty collection and added movies are lost when the application
+is shut down. In this chapter we will see how to store the data in a database.
+This chapter has nothing to do with Flask; it just stores the data
+in an SQL database and assumes that the reader knows about SQL.</p>
+<p>To keep things simple and to avoid database installation or configuration
+issues, we will use an SQLite database.</p>
+<p>Create a database with the name <code class="file docutils literal notranslate"><span class="pre">movies.sqlite</span></code> in your home directory
+and create a table in it using the following SQL statement:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">MOVIE</span> <span class="p">(</span>
+  <span class="n">ID</span> <span class="nb">INTEGER</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="n">AUTOINCREMENT</span><span class="p">,</span>
+  <span class="n">TITLE</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="n">YR</span> <span class="nb">INTEGER</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The code for SQLite database operations are given in
+<a class="reference internal" href="#lst-database-v0601"><span class="std std-numref">Listing 6.1</span></a>. These are not within the scope of this tutorial.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<span id="lst-database-v0601"></span><div class="code-block-caption"><span class="caption-number">Listing 6.1 </span><span class="caption-text">Database class for SQLite storage
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">database.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0601</span></code>).</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sqlite3</span> <span class="kn">as</span> <span class="nn">dbapi2</span>
+
+<span class="kn">from</span> <span class="nn">movie</span> <span class="kn">import</span> <span class="n">Movie</span>
+
+
+<span class="k">class</span> <span class="nc">Database</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbfile</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbfile</span> <span class="o">=</span> <span class="n">dbfile</span>
+
+    <span class="k">def</span> <span class="nf">add_movie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">movie</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">dbapi2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;INSERT INTO MOVIE (TITLE, YR) VALUES (?, ?)&quot;</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">movie</span><span class="o">.</span><span class="n">year</span><span class="p">))</span>
+            <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="n">movie_key</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">lastrowid</span>
+        <span class="k">return</span> <span class="n">movie_key</span>
+
+    <span class="k">def</span> <span class="nf">update_movie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">movie_key</span><span class="p">,</span> <span class="n">movie</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">dbapi2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;UPDATE MOVIE SET TITLE = ?, YR = ? WHERE (ID = ?)&quot;</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">movie</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">movie_key</span><span class="p">))</span>
+            <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">delete_movie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">movie_key</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">dbapi2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;DELETE FROM MOVIE WHERE (ID = ?)&quot;</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="n">movie_key</span><span class="p">,))</span>
+            <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_movie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">movie_key</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">dbapi2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT TITLE, YR FROM MOVIE WHERE (ID = ?)&quot;</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="n">movie_key</span><span class="p">,))</span>
+            <span class="n">title</span><span class="p">,</span> <span class="n">year</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+        <span class="n">movie_</span> <span class="o">=</span> <span class="n">Movie</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">movie_</span>
+
+    <span class="k">def</span> <span class="nf">get_movies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">movies</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">dbapi2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;SELECT ID, TITLE, YR FROM MOVIE ORDER BY ID&quot;</span>
+            <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">movie_key</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+                <span class="n">movies</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">movie_key</span><span class="p">,</span> <span class="n">Movie</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">year</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">movies</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Finally, we have to change the database configuration of the application.
+The database is assumed to be a file named <code class="file docutils literal notranslate"><span class="pre">movies.sqlite</span></code>
+in the user’s home directory.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<span id="lst-server-v0601"></span><div class="code-block-caption"><span class="caption-number">Listing 6.2 </span><span class="caption-text">Server that uses an SQLite database
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">server.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0601</span></code>).</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">home_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home_dir</span><span class="p">,</span> <span class="s2">&quot;movies.sqlite&quot;</span><span class="p">))</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;db&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="solutions.html" class="btn btn-neutral float-right" title="7. Solutions to Exercises" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="logins.html" class="btn btn-neutral" title="5. Logins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2018, H. Turgut Uyar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

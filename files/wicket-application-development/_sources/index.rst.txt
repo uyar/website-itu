@@ -1,0 +1,87 @@
+##############################
+Wicket Application Development
+##############################
+
+:Author: H\. Turgut Uyar
+
+:Copyright: © H\. Turgut Uyar, 2010-2013.
+
+:License:
+  This tutorial is released under the Creative Commons
+  Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
+  You are free:
+
+  * to Share — to copy, distribute and transmit the work
+  * to Remix — to adapt the work
+
+  Under the following conditions:
+
+  * Attribution — You must attribute the work in the manner specified by the
+    author or licensor (but not in any way that suggests that they endorse you
+    or your use of the work).
+
+  * Noncommercial — You may not use this work for commercial purposes.
+
+  * Share Alike — If you alter, transform, or build upon this work, you may
+    distribute the resulting work only under the same or similar license to
+    this one.
+
+  You can find more information on the page:
+
+  http://creativecommons.org/licenses/by-nc-sa/3.0/.
+
+:Formats:
+  You can read this tutorial online at the following address:
+
+  http://web.itu.edu.tr/uyar/wicket-application-development/
+
+  You can also download it in various formats:
+
+  * `PDF <http://web.itu.edu.tr/uyar/wicket-application-development/wicket-application-development.pdf>`_
+  * `Zipped HTML <http://web.itu.edu.tr/uyar/wicket-application-development/wicket-application-development.html.zip>`_
+
+  The code of the example application is kept in the following Mercurial
+  repository:
+
+  https://pikacode.com/uyar/wicket-application-development/
+
+:Releases:
+   v1.1 - September 2013
+
+      * Updated for Wicket 6.0.10.
+      * Removed IDE discussions.
+
+   v1.0 - August 2010
+
+--------------------
+
+This tutorial aims to demonstrate how to build an application using the Apache
+Wicket web framework. You can find more information about the Wicket project
+on its web site:
+
+http://wicket.apache.org/
+
+Although the application code does not depend on any particular development
+environment, the narration makes use of Eclipse features and it can be easier
+to use Eclipse when repeating the steps explained in the tutorial.
+
+.. warning::
+   Please keep in mind that this is not a "best practices" tutorial; it just
+   tries to make it easier for a beginner to understand the Wicket framework.
+   Although I have prepared this tutorial to the best of my understanding on
+   the subject, it may still contain errors, omissions, and improper uses of
+   Java or Wicket features.
+
+--------------------
+
+.. toctree::
+   :maxdepth: 2
+   :numbered:
+
+   basics
+   application-structure
+   data-model
+   forms
+   data-persistence
+   solutions

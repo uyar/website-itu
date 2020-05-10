@@ -1,0 +1,305 @@
+****************
+Data Persistence
+****************
+
+A major problem with the application as implemented so far is that the data
+the user enters do not persist. Every time, the application starts with an
+empty collection and added movies are lost when the application is shut down.
+In this chapter we will see how to store the data in a database. This chapter
+has nothing to do with Wicket; it just stores the data in an SQL database and
+assumes that the reader knows about SQL.
+
+Collection Interface
+====================
+
+In order to make it easier to switch between different persistence mechanisms,
+we will first create a simple interface that all these mechanisms will
+implement. Add a Java interface with the name :class:`IMovieCollection`. The
+interface has to declare the methods as shown in
+:ref:`Listing: Movie collection interface <listing_imoviecollection>`.
+
+.. _listing_imoviecollection:
+
+:Listing: Movie collection interface.
+
+.. code-block:: java
+
+   package wicket.quickstart;
+
+   import java.util.List;
+
+   public interface IMovieCollection {
+       public List<Movie> getMovies();
+       public void addMovie(Movie movie);
+       public void deleteMovie(Movie movie);
+       public void updateMovie(Movie movie);
+   }
+
+The :class:`MovieCollection` class based on lists already implements this
+interface; we just have to acknowledge this by changing the class definition:
+
+.. code-block:: java
+
+   public MovieCollection implements IMovieCollection {
+       ...
+   }
+
+We also have to change the code pieces that refer to the
+:class:`MovieCollection` class so that they will use the
+:class:`IMovieCollection` interface. That means changing the
+:class:`WicketApplication` class, so that the only place where the actual
+collection implementation is used will be where the collection is
+initialized (line 12):
+
+.. code-block:: java
+   :linenos:
+
+   public class WicketApplication extends WebApplication {
+       private IMovieCollection _collection;
+
+       @Override
+       public Class<? extends WebPage> getHomePage() {
+           return HomePage.class;
+       }
+
+       @Override
+       public void init() {
+           super.init();
+           this._collection = new MovieCollection();
+       }
+
+       public IMovieCollection getCollection() {
+           return this._collection;
+       }
+   }
+
+Also the references to the :class:`MovieCollection` class in the
+:class:`MovieEditForm` and :class:`MovieListForm` classes have to be changed
+to the :class:`IMovieCollection` interface.
+
+.. note::
+
+   You can see the changes from the previous version at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/355df788f8f0.
+   You can get a copy of this version by clicking on the download link on that
+   page.
+
+JDBC
+====
+
+To keep things simple and to avoid database installation or configuration
+issues, we will an SQLite database. Download the JDBC driver JAR file for
+SQLite from the following page, put it in the :file:`lib` directory, and add
+it to the project classpath:
+
+http://www.xerial.org/trac/Xerial/wiki/SQLiteJDBC
+
+Next, create a database with the name :file:`movies.sqlite` in your home
+directory and create a table in it using the following SQL statement:
+
+.. code-block:: sql
+
+   CREATE TABLE MOVIE (
+      ID INTEGER PRIMARY KEY AUTOINCREMENT,
+      TITLE VARCHAR(80) NOT NULL,
+      YEAR INTEGER
+   )
+
+.. tip::
+   You can use the SQLite Manager add-on for Firefox to manage SQLite databases:
+
+   https://addons.mozilla.org/en-US/firefox/addon/sqlite-manager/
+
+As indicated by the SQL table creation statement above, movie objects now have
+identifiers. We modify our :class:`Movie` class as shown in
+:ref:`Listing: Movie class with id attribute <listing_movie_with_id>`
+to add this attribute (line 3) and its getter and setter methods (lines 9-15):
+
+.. _listing_movie_with_id:
+
+:Listing: Movie class with identifier attribute.
+
+.. code-block:: java
+
+   public class Movie {
+       private Integer _id = null;
+       private String _title;
+       private Integer _year;
+
+       ...
+
+       public void setId(Integer id) {
+           this._id = id;
+       }
+
+       public Integer getId() {
+           return this._id;
+       }
+
+       ...
+   }
+
+Now we have to implement a :class:`MovieCollectionJDBC` class which will
+implement our common collection interface but this time using a database to
+store the data (line 2).
+
+.. code-block:: java
+   :linenos:
+
+   public class MovieCollectionJDBC implements IMovieCollection {
+       private Connection _db;
+
+       public MovieCollectionJDBC(String dbFilePath) {
+           try {
+               Class.forName("org.sqlite.JDBC");
+           } catch (ClassNotFoundException e) {
+               throw new UnsupportedOperationException(e.getMessage());
+           }
+
+           try {
+               String jdbcURL = "jdbc:sqlite:" + dbFilePath;
+               this._db = DriverManager.getConnection(jdbcURL);
+           } catch (SQLException ex) {
+               throw new UnsupportedOperationException(ex.getMessage());
+           }
+       }
+
+       public List<Movie> getMovies() {
+           ...
+       }
+
+       public void addMovie(Movie movie) {
+           ...
+       }
+
+       public void deleteMovie(Movie movie) {
+           ...
+       }
+
+       public void updateMovie(Movie movie) {
+           ...
+       }
+   }
+
+The methods for getting the movie list, adding a movie, removing a movie, and
+updating a movie are given below. These are simple JDBC operations and are not
+within the scope of this tutorial.
+
+.. important::
+
+   Note that, in order to simplify the code, the examples throw an
+   :class:`UnsupportedOperationException` whereever an exception is needed.
+   A real-life application should handle errors properly. It should also close
+   resources like statements and result sets in the ``finally`` clauses of the
+   ``try - catch`` blocks.
+
+.. _listing_moviecollection_jdbc_get_movies:
+
+:Listing: Getting movies from a JDBC-based collection.
+
+.. code-block:: java
+   :linenos:
+
+   public List<Movie> getMovies() {
+       List<Movie> movies = new LinkedList<Movie>();
+       try {
+           String query = "SELECT ID, TITLE, YEAR FROM MOVIE";
+           Statement statement = this._db.createStatement();
+           ResultSet results = statement.executeQuery(query);
+           while (results.next()) {
+               Integer id = results.getInt("ID");
+               String title = results.getString("TITLE");
+               Integer year = results.getInt("YEAR");
+               Movie movie = new Movie(title);
+               movie.setId(id);
+               movie.setYear(year);
+               movies.add(movie);
+           }
+           results.close();
+           statement.close();
+       } catch (SQLException e) {
+           throw new UnsupportedOperationException(e.getMessage());
+       }
+       return movies;
+   }
+
+.. _listing_moviecollection_jdbc_add_movie:
+
+:Listing: Adding a movie to a JDBC-based collection.
+
+.. code-block:: java
+   :linenos:
+
+   public void addMovie(Movie movie) {
+       try {
+           String query = "INSERT INTO MOVIE (TITLE, YEAR) VALUES (?, ?)";
+           PreparedStatement statement = this._db.prepareStatement(query);
+           statement.setString(1, movie.getTitle());
+           statement.setInt(2, movie.getYear());
+           statement.executeUpdate();
+       } catch (SQLException e) {
+           throw new UnsupportedOperationException(e.getMessage());
+       }
+   }
+
+.. _listing_moviecollection_jdbc_delete_movie:
+
+:Listing: Deleting a movie from a JDBC-based collection.
+
+.. code-block:: java
+   :linenos:
+
+   public void deleteMovie(Movie movie) {
+       try {
+           String query = "DELETE FROM MOVIE WHERE (ID = ?)";
+           PreparedStatement statement = this._db.prepareStatement(query);
+           statement.setInt(1, movie.getId());
+           statement.executeUpdate();
+           statement.close();
+       } catch (SQLException e) {
+           throw new UnsupportedOperationException(e.getMessage());
+       }
+   }
+
+.. _listing_moviecollection_jdbc_update_movie:
+
+:Listing: Updating a movie in a JDBC-based collection.
+
+.. code-block:: java
+   :linenos:
+
+   public void updateMovie(Movie movie) {
+       try {
+           String query = "UPDATE MOVIE SET TITLE = ?, YEAR = ? WHERE (ID = ?)";
+           PreparedStatement statement = this._db.prepareStatement(query);
+           statement.setString(1, movie.getTitle());
+           statement.setInt(2, movie.getYear());
+           statement.setInt(3, movie.getId());
+           statement.executeUpdate();
+           statement.close();
+       } catch (SQLException e) {
+           throw new UnsupportedOperationException(e.getMessage());
+       }
+   }
+
+Finally, we just have to change the collection implementation chosen in the
+initialization method of the :class:`WicketApplication` class. The database is
+assumed to be a file named :file:`movies.sqlite` in the user's home directory.
+
+.. code-block:: java
+
+   @Override
+   public void init() {
+       super.init();
+
+       String homeDir = System.getProperty("user.home");
+       String dbFilePath = homeDir + File.separator + "movies.sqlite";
+       this._collection = new MovieCollectionJDBC(dbFilePath);
+   }
+
+.. note::
+
+   You can see the changes from the previous version at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/ffdf17e8983c.
+   You can get a copy of this version by clicking on the download link on that
+   page.

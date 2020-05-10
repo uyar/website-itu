@@ -1,0 +1,263 @@
+Forms
+=====
+
+In this chapter, we'll implement the operations that will let us modify
+the collection, like adding a new movie and deleting an existing movie.
+These operations require the use of forms containing components such as
+text boxes and check boxes. The resulting pages are given in
+:numref:`fig_forms_movie_edit` and :numref:`fig_forms_movies_delete`.
+
+.. _fig_forms_movie_edit:
+.. figure:: ./figures/forms_movie_edit.png
+   :align: center
+   :alt: Screenshot of movie edit form.
+
+   Form for adding a movie.
+
+.. _fig_forms_movies_delete:
+.. figure:: ./figures/forms_movies_delete.png
+   :align: center
+   :alt: Screenshot of movie list form with delete option.
+
+   Form for deleting movies.
+
+
+Posting Data
+------------
+
+First, we'll create a form to add a movie. Add an HTML template file named
+:file:`templates/movie_edit.html` and arrange its contents as in
+:numref:`lst_movie_edit_v0401`. Note that this is mostly a static template,
+with only the minimum and maximum allowed year values taken as parameters
+for the year input (lines 17-18).
+
+.. _lst_movie_edit_v0401:
+.. literalinclude:: ../../app/v0401/templates/movie_edit.html
+   :caption: Form for editing the data of a movie
+             (file: :file:`templates/movie_edit.html`, version: ``v0401``).
+   :language: html
+   :linenos:
+
+Since the ``action`` attribute of the ``form`` element is empty (line 6),
+when the "Save" button is clicked, the form data will be posted to the same
+address as the current one. Therefore, the view function for this page
+has to be able to handle two types of requests (:numref:`lst_views_v0401`):
+
+* Requests with no data. These use the HTTP GET method. The response will be
+  an empty form for a new movie (lines 2-5).
+
+* Request with the data of the movie to save. These use the HTTP POST method
+  (lines 6-12).
+
+.. _lst_views_v0401:
+.. literalinclude:: ../../app/v0401/views.py
+   :caption: Handler for the movie addition page.
+             (file: :file:`views.py`, version: ``v0401``)
+   :language: python
+   :lines: 29-
+   :linenos:
+
+The data that was posted is retrieved through the ``request`` variable
+(lines 7-8) and a movie is created with the given data (line 9). We add
+the movie to the database (lines 10-11) and get the key that was assigned
+to it. After the operation is completed, we redirect the client
+to the display page for the added movie (line 12) instead of showing
+a new type of page. Note that this code requires the following names
+to be imported from Flask: ``request``, ``redirect``, ``url_for``.
+
+In order for a view function to be able to respond to both ``GET`` and ``POST``
+methods, these need to be allowed when registering the route
+(:numref:`lst_server_v0401`, lines 7-8).
+
+.. _lst_server_v0401:
+.. literalinclude:: ../../app/v0401/server.py
+   :caption: App creation with new URL rule for movie addition.
+             (file: :file:`server.py`, version: ``v0401``)
+   :language: python
+   :diff: ../../app/v0302b/server.py
+   :linenos:
+
+Now that we can add movies to the collection, we don't need the sample movie
+data in the :file:`server.py` file anymore (lines 12-13).
+
+To make this page accessible from other pages, we add a link to the global
+navigation panel (:numref:`lst_layout_v0401`, lines 8-10).
+
+.. _lst_layout_v0401:
+.. literalinclude:: ../../app/v0401/templates/layout.html
+   :caption: Navigation with link to movie addition page.
+             (file: :file:`templates/layout.html`, version: ``v0401``)
+   :language: html
+   :lines: 15-25
+   :linenos:
+   :emphasize-lines: 8-10
+
+
+Posting Lists
+-------------
+
+Our next step is to delete movies from the collection. We will change
+the movie list page so that there will be a check box next to every movie.
+There will also be a delete button which, when clicked, will cause all checked
+movies to be deleted. First, we change the template for the movie list page
+as in :numref:`lst_movies_v0402`.
+
+.. _lst_movies_v0402:
+.. literalinclude:: ../../app/v0402/templates/movies.html
+   :caption: Movie list template with check boxes for entries.
+             (file: :file:`templates/movies.html`, version: ``v0402``)
+   :language: html
+   :linenos:
+   :emphasize-lines: 13, 26
+
+Since this page is now going to be used to post data to the server,
+the elements are placed into a form (between lines 7 and 29). The data
+will be posted to the same address, and the keys of the selected movies
+will be accumulated in the ``movie_keys`` variable (line 13). And finally,
+there is the ``button`` element for submitting the form (line 26).
+
+Like the ``movie_add_page`` handler, now the ``movies_page`` handler also needs
+to handle two types of requests. One for displaying the movies and letting
+the user select the movies to delete (``GET`` method) and one for deleting
+the movies selected by the user (``POST`` method).
+
+.. _lst_views_v0402:
+.. literalinclude:: ../../app/v0402/views.py
+   :caption: Handler for the movie removal page.
+             (file: :file:`views.py`, version: ``v0402``)
+   :language: python
+   :lines: 15-24
+   :linenos:
+   :emphasize-lines: 7
+
+When posting a collection of data, we have to use the ``getlist`` method
+(:numref:`lst_views_v0402`, line 7). In this example, the keys
+of the selected movies selected will be put into a list and assigned
+to the ``movie_keys`` variable.
+
+Also remember that the view function has to be adjusted to accept both ``GET``
+and ``POST`` methods (:numref:`lst_server_v0402`):
+
+.. _lst_server_v0402:
+.. literalinclude:: ../../app/v0402/server.py
+   :caption: App creation with new URL rule for movie removal.
+             (file: :file:`server.py`, version: ``v0402``)
+   :language: python
+   :diff: ../../app/v0401/server.py
+   :linenos:
+
+
+.. admonition:: Exercise 1
+
+   Add a link to the movie display page which, when clicked, will take the user
+   to the movie edit page. The URL of the edit page has to have the extra path
+   ``/edit`` after the movie display page URL. That means, for example,
+   the edit page of movie with key 1 has to be ``/movies/1/edit``.
+   After saving, the movie has to be updated in the collection, and not added
+   a second time. (:ref:`Solution <solutions_forms_edit>`)
+
+
+Validating Inputs
+-----------------
+
+A very important aspect of web application development is making sure that
+the data received from the outside world contains sensible values.
+This not only makes the application more robust with respect to user errors,
+it's also crucial for preventing security issues. Any received data, such as
+values supplied by users, or values read from databases must be validated.
+
+At the moment, when editing movies, our view functions assume that
+the received movie data is valid. The HTML markup defines constraints
+for the inputs to enforce validity:
+
+#. The ``title`` input is marked as required (:numref:`lst_movie_edit_v0401`,
+   line 10). So if the user leaves this field blank, the browser will
+   not submit the form and force the user to fill it in.
+
+#. The ``year`` input has the type ``number`` with minimum and maximum allowed
+   values (lines 17-18). So the browser won't allow the user to send
+   non-numeric symbols, or any value that's not within this range.
+
+But these protections are not sufficient:
+
+#. Since the ``title`` input is required it can't be left blank, but a title
+   consisting of only whitespace is accepted.
+
+#. Even worse, it's possible post any arbitrary data to the corresponding URL
+   directly, bypassing any restriction defined in the HTML markup. For example,
+   A non-numeric value for the ``year`` input can be sent by issuing
+   the following command from the command line, causing the server to fail::
+
+     $ curl --data "title=Grease&year=abc" http://localhost:8080/new-movie
+     ...
+     ValueError: invalid literal for int() with base 10: 'abc'
+
+To solve these problems, we'll start by adding a function to validate
+the sent form (:numref:`lst_validate_v0403`). This function will take a form
+as parameter and return whether there are any errors in it. It attaches
+two attributes to the form: one for data and one for the error messages
+(lines 2-3). For every input, it either adds an error entry if the value
+is not validated (as in line 7 for title), or it adds a data entry (as in
+line 9 for title). When adding the data entry, it also does type conversion
+if necessary (as in lines 17 and 21 for year). If all data is valid, errors
+will be empty and the function will return ``True`` (line 23).
+
+.. _lst_validate_v0403:
+.. literalinclude:: ../../app/v0403/views.py
+   :caption: Movie edit form validator function.
+             (file: :file:`views.py`, version: ``v0403``)
+   :language: python
+   :lines: 35-57
+   :linenos:
+
+Next, our movie addition page handler will call this function to validate
+the form it received (:numref:`lst_views_add_v0403`, line 11). If the form
+is not valid, it will be rendered again, this time using the data
+in the submitted form as the default values (lines 13-18), so that the user
+won't have to enter all fields again. If the form is valid, the data
+for the new movie can now be taken from the ``data`` attribute
+that was attached to the form by the validator function (lines 19-20).
+
+.. _lst_views_add_v0403:
+.. literalinclude:: ../../app/v0403/views.py
+   :caption: Movie addition with validation.
+             (file: :file:`views.py`, version: ``v0403``)
+   :language: python
+   :lines: 60-83
+   :linenos:
+   :emphasize-lines: 17
+
+Also remember that the validator attaches error messages to the form
+and these messages can now be displayed when the form is re-rendered after
+an invalid submission (:numref:`lst_movie_edit_v0403`, lines 13-17 and 27-31).
+
+.. _lst_movie_edit_v0403:
+.. literalinclude:: ../../app/v0403/templates/movie_edit.html
+   :caption: Movie edit form with error messages.
+             (file: :file:`templates/movie_edit.html`, version: ``v0403``)
+   :language: html
+   :linenos:
+   :emphasize-lines: 13-17, 27-31
+
+And similar arrangements have to be made in the movie editing handler
+(:numref:`lst_views_edit_v0403`).
+
+.. _lst_views_edit_v0403:
+.. literalinclude:: ../../app/v0403/views.py
+   :caption: Movie editing with validation.
+             (file: :file:`views.py`, version: ``v0403``)
+   :language: python
+   :lines: 86-
+   :linenos:
+   :emphasize-lines: 15-24
+
+
+.. admonition:: Exercise 2
+
+   Replace the input validation mechanism with an implementation that uses
+   the `Flask-WTF`_ plugin. Also make use of its CSRF protection features.
+   For handling ``number`` type inputs, use the `wtforms_components`_ package.
+   (:ref:`Solution <solutions_forms_wtf>`)
+
+.. _Flask-WTF: https://flask-wtf.readthedocs.io/
+.. _wtforms_components: https://wtforms-components.readthedocs.io/

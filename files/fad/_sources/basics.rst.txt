@@ -1,0 +1,223 @@
+Basics
+======
+
+In this tutorial, we're going to develop an application for managing
+a movie collection. We'll start by creating a simple home page containing
+only a title. Then, we'll add a greeting message based on the current date
+to show how dynamic content is generated. Next, we'll create another page,
+again containing only a title. This second page will be populated
+with the list of movies in later chapters. Finally, we'll provide a link
+from the home page to the movie list page. In the end, the home page will look
+as shown in :numref:`fig_basics_homepage`.
+
+.. _fig_basics_homepage:
+.. figure:: ./figures/basics_homepage.*
+   :align: center
+   :alt: Screenshot of home page with message and link.
+
+   Home page containing a greeting message and a link to the movie list page.
+
+
+Applications
+------------
+
+Using Flask, we can create a web application in just one source file.
+In :numref:`lst_server_v0101`, you can see the code for a very simple
+application that serves only one page with only a title in it. Save this code
+in a file named :file:`server.py` and run it using the command::
+
+  python server.py
+
+Now, when you visit the address ``http://localhost:8080/`` you should see
+the title.
+
+.. _lst_server_v0101:
+.. literalinclude:: ../../app/v0101/server.py
+   :caption: Application with only a title
+             (file: :file:`server.py`, version: ``v0101``).
+   :language: python
+   :linenos:
+
+Let's go over this code line by line:
+
+- Line 1: The ``Flask`` application class gets imported. Applications are
+  instances of this class.
+
+- Line 4: An application of this class gets instantiated.
+
+- Line 13: The application gets started. The ``host`` parameter specifies
+  that the server should be publicly available, and the ``port`` parameter
+  specifies that it should run on port 8080. We also set the application
+  to run in debug mode to get better feedback about errors.
+
+  .. warning::
+
+     Debug mode causes security problems. Therefore this mode should be
+     enabled only during development.
+
+- Lines 7-9: A *view function* is defined to handle requests to the home page.
+  It simply returns a string containing the title. The ``route`` decorator
+  registers the ``/`` route with this function. So whenever there is a request
+  to the ``/`` route, this function will be invoked and its result will be sent
+  back to the client as the response.
+
+Note that the string returned by the view function is not an HTML page,
+but only a string. We could return an HTML page as in:
+
+.. code-block:: python
+
+   return """<!DOCTYPE html>
+   <html lang="en">
+     <head>
+       <meta charset="utf-8"/>
+       <title>My movies</title>
+     </head>
+     <body>
+       <h1>My movie collection</h1>
+     </body>
+   </html>
+   """
+
+But this would not only make the code less readable, it would also be very
+difficult to maintain. The proper way to handle this is to use a template
+that contains the HTML markup. By default, Flask looks for template files
+in the :file:`templates` folder; so we create a file named :file:`home.html`
+in that folder to contain the home page template given
+in :numref:`lst_home_v0102`.
+
+.. _lst_home_v0102:
+.. literalinclude:: ../../app/v0102/templates/home.html
+   :caption: Initial home page template
+             (file: :file:`templates/home.html`, version: ``v0102``).
+   :language: html
+   :linenos:
+
+Now, as shown in :numref:`lst_server_v0102`, we can import a function
+for rendering a template (line 1), and the view function can call it to render
+the home page (line 9).
+
+.. _lst_server_v0102:
+.. literalinclude:: ../../app/v0102/server.py
+   :caption: Application using a template
+             (file: :file:`server.py`, version: ``v0102``).
+   :language: python
+   :linenos:
+   :emphasize-lines: 1,9
+
+Static files like images and style sheets are placed into the :file:`static`
+folder. Our template (:numref:`lst_home_v0102`) contains a style sheet
+reference on line 6. To make this reference work, we create the file
+:file:`static/mymovies.css` with the contents given
+in :numref:`lst_style_v0102`.
+
+.. _lst_style_v0102:
+.. literalinclude:: ../../app/v0102/static/mymovies.css
+   :caption: Style sheet for the application
+             (file: :file:`static/mymovies.css`, version: ``v0102``).
+   :language: css
+   :linenos:
+
+
+Dynamic Content
+---------------
+
+Let's add a greeting message to our home page based on the current date.
+We first change our template to add the necessary markup
+(:numref:`lst_home_v0103`, line 10).
+
+.. _lst_home_v0103:
+.. literalinclude:: ../../app/v0103/templates/home.html
+   :caption: Home page markup with dynamic greeting message
+             (file: :file:`templates/home.html`, version: ``v0103``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 10
+
+Since the name of the current day will change between different visits,
+we need our template system to be able to generate the HTML output dynamically.
+For this purpose, we're going to use `Jinja <http://jinja.pocoo.org/>`_,
+which is the default template system used by Flask.
+
+In Jinja templates, the parts marked with ``{{`` and ``}}`` will be replaced
+by the value of the expression they contain. The parameters in the expression
+have to be supplied by the view function that renders this template.
+In our example, the ``home_page`` function has to send a value for ``day``
+as a parameter. :numref:`lst_server_v0103` shows how the view function decides
+the name of the current day (lines 11-12), and sends it to the template
+(line 13).
+
+.. _lst_server_v0103:
+.. literalinclude:: ../../app/v0103/server.py
+   :caption: View function sending parameter
+             (file: :file:`server.py`, version: ``v0103``).
+   :language: python
+   :linenos:
+   :emphasize-lines: 11-13
+
+The application, as implemented so far, runs as follows:
+
+- An application object gets instantiated.
+
+- The application registers the ``home_page`` function to respond to requests
+  for the ``/`` route.
+
+- The application starts running on the localhost on port 8080 and
+  waits for requests.
+
+- When a request comes for ``http://localhost:8080/``, the ``home_page``
+  function gets invoked.
+
+- This function gets the current day and renders the home page template,
+  passing the name of the day as a parameter to it. The server sends
+  the rendered page back to the client.
+
+- The client parses the response and encounters the link for the style sheet.
+  It makes a request to ``http://localhost:8080/static/mymovies.css``.
+
+- The server sends back the :file:`mymovies.css` file.
+
+
+Adding Links
+------------
+
+Now we want to create a second page which will be used for listing the movies
+in the collection. At first, the page will only contain some static text;
+it will be populated in later chapters. The template for the page is given
+in :numref:`lst_movies_v0104`.
+
+.. _lst_movies_v0104:
+.. literalinclude:: ../../app/v0104/templates/movies.html
+   :caption: Initial template for movie list page
+             (file: :file:`templates/movies.html`, version: ``v0104``).
+   :language: html
+   :linenos:
+
+Our application needs a view function to respond to requests for this page.
+We register the ``movies_page`` function to handle the ``/movies`` route
+(:numref:`lst_server_v0104`, lines 16-18).
+
+.. _lst_server_v0104:
+.. literalinclude:: ../../app/v0104/server.py
+   :caption: Application with a movie list page view function
+             (file: :file:`server.py`, version: ``v0104``).
+   :language: python
+   :linenos:
+   :emphasize-lines: 16-18
+
+Our last step will be to provide a link from the home page to the movie list
+page. To achieve this, we just have to modify the home page template
+(:numref:`lst_home_v0104`, lines 12-14).
+
+.. _lst_home_v0104:
+.. literalinclude:: ../../app/v0104/templates/home.html
+   :caption: Home page template with link to movie list page
+             (file: :file:`templates/home.html`, version: ``v0104``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 12-14
+
+
+.. admonition:: Exercise 1
+
+   Add a link from the movie list page to the home page.
+   (:ref:`Solution <solutions_basics_link>`)

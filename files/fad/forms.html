@@ -1,0 +1,886 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4. Forms &mdash; Flask Tutorial</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="5. Logins" href="logins.html" />
+    <link rel="prev" title="3. Data Model" href="data-model.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Flask Application Development
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="basics.html">1. Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="application-structure.html">2. Application Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-model.html">3. Data Model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Forms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#posting-data">4.1. Posting Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#posting-lists">4.2. Posting Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validating-inputs">4.3. Validating Inputs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="logins.html">5. Logins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="persistence.html">6. Persistence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solutions.html">7. Solutions to Exercises</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Flask Application Development</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>4. Forms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="forms">
+<h1>4. Forms<a class="headerlink" href="#forms" title="Permalink to this headline">¶</a></h1>
+<p>In this chapter, we’ll implement the operations that will let us modify
+the collection, like adding a new movie and deleting an existing movie.
+These operations require the use of forms containing components such as
+text boxes and check boxes. The resulting pages are given in
+<a class="reference internal" href="#fig-forms-movie-edit"><span class="std std-numref">Fig. 4.1</span></a> and <a class="reference internal" href="#fig-forms-movies-delete"><span class="std std-numref">Fig. 4.2</span></a>.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-forms-movie-edit"></span><img alt="Screenshot of movie edit form." src="_images/forms_movie_edit.png" />
+<p class="caption"><span class="caption-number">Fig. 4.1 </span><span class="caption-text">Form for adding a movie.</span></p>
+</div>
+<div class="figure align-center" id="id2">
+<span id="fig-forms-movies-delete"></span><img alt="Screenshot of movie list form with delete option." src="_images/forms_movies_delete.png" />
+<p class="caption"><span class="caption-number">Fig. 4.2 </span><span class="caption-text">Form for deleting movies.</span></p>
+</div>
+<div class="section" id="posting-data">
+<h2>4.1. Posting Data<a class="headerlink" href="#posting-data" title="Permalink to this headline">¶</a></h2>
+<p>First, we’ll create a form to add a movie. Add an HTML template file named
+<code class="file docutils literal notranslate"><span class="pre">templates/movie_edit.html</span></code> and arrange its contents as in
+<a class="reference internal" href="#lst-movie-edit-v0401"><span class="std std-numref">Listing 4.1</span></a>. Note that this is mostly a static template,
+with only the minimum and maximum allowed year values taken as parameters
+for the year input (lines 17-18).</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<span id="lst-movie-edit-v0401"></span><div class="code-block-caption"><span class="caption-number">Listing 4.1 </span><span class="caption-text">Form for editing the data of a movie
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">templates/movie_edit.html</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0401</span></code>).</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-html notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28</pre></div></td><td class="code"><div class="highlight"><pre><span></span>{% extends &quot;layout.html&quot; %}
+{% block title %}Edit movie{% endblock %}
+{% block content %}
+    <span class="p">&lt;</span><span class="nt">h1</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Edit movie<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">form</span> <span class="na">action</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;post&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;movie_edit&quot;</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;field&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;title&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">&gt;</span>Title<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;control&quot;</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;title&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;input&quot;</span> <span class="na">required</span><span class="o">=</span><span class="s">&quot;required&quot;</span><span class="p">/&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;field&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;year&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">&gt;</span>Year<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;control&quot;</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;number&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;year&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;input&quot;</span>
+                 <span class="na">min</span><span class="o">=</span><span class="s">&quot;{{ min_year }}&quot;</span> <span class="na">max</span><span class="o">=</span><span class="s">&quot;{{ max_year }}&quot;</span><span class="p">/&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;field is-grouped&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;control&quot;</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">button</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;button is-primary is-small&quot;</span><span class="p">&gt;</span>Save<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+{% endblock %}
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Since the <code class="docutils literal notranslate"><span class="pre">action</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">form</span></code> element is empty (line 6),
+when the “Save” button is clicked, the form data will be posted to the same
+address as the current one. Therefore, the view function for this page
+has to be able to handle two types of requests (<a class="reference internal" href="#lst-views-v0401"><span class="std std-numref">Listing 4.2</span></a>):</p>
+<ul class="simple">
+<li>Requests with no data. These use the HTTP GET method. The response will be
+an empty form for a new movie (lines 2-5).</li>
+<li>Request with the data of the movie to save. These use the HTTP POST method
+(lines 6-12).</li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id4">
+<span id="lst-views-v0401"></span><div class="code-block-caption"><span class="caption-number">Listing 4.2 </span><span class="caption-text">Handler for the movie addition page.
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">views.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0401</span></code>)</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">movie_add_page</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+            <span class="s2">&quot;movie_edit.html&quot;</span><span class="p">,</span> <span class="n">min_year</span><span class="o">=</span><span class="mi">1887</span><span class="p">,</span> <span class="n">max_year</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">form_title</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+        <span class="n">form_year</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+        <span class="n">movie</span> <span class="o">=</span> <span class="n">Movie</span><span class="p">(</span><span class="n">form_title</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">form_year</span><span class="p">)</span> <span class="k">if</span> <span class="n">form_year</span> <span class="k">else</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;db&quot;</span><span class="p">]</span>
+        <span class="n">movie_key</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">add_movie</span><span class="p">(</span><span class="n">movie</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;movie_page&quot;</span><span class="p">,</span> <span class="n">movie_key</span><span class="o">=</span><span class="n">movie_key</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>The data that was posted is retrieved through the <code class="docutils literal notranslate"><span class="pre">request</span></code> variable
+(lines 7-8) and a movie is created with the given data (line 9). We add
+the movie to the database (lines 10-11) and get the key that was assigned
+to it. After the operation is completed, we redirect the client
+to the display page for the added movie (line 12) instead of showing
+a new type of page. Note that this code requires the following names
+to be imported from Flask: <code class="docutils literal notranslate"><span class="pre">request</span></code>, <code class="docutils literal notranslate"><span class="pre">redirect</span></code>, <code class="docutils literal notranslate"><span class="pre">url_for</span></code>.</p>
+<p>In order for a view function to be able to respond to both <code class="docutils literal notranslate"><span class="pre">GET</span></code> and <code class="docutils literal notranslate"><span class="pre">POST</span></code>
+methods, these need to be allowed when registering the route
+(<a class="reference internal" href="#lst-server-v0401"><span class="std std-numref">Listing 4.3</span></a>, lines 7-8).</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<span id="lst-server-v0401"></span><div class="code-block-caption"><span class="caption-number">Listing 4.3 </span><span class="caption-text">App creation with new URL rule for movie addition.
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">server.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0401</span></code>)</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="highlight-udiff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gd">--- /home/uyar/Projects/flask-tutorial/app/v0302b/server.py</span>
+<span class="gi">+++ /home/uyar/Projects/flask-tutorial/app/v0401/server.py</span>
+<span class="gu">@@ -12,10 +12,11 @@</span>
+     app.add_url_rule(&quot;/&quot;, view_func=views.home_page)
+     app.add_url_rule(&quot;/movies&quot;, view_func=views.movies_page)
+     app.add_url_rule(&quot;/movies/&lt;int:movie_key&gt;&quot;, view_func=views.movie_page)
+<span class="gi">+    app.add_url_rule(</span>
+<span class="gi">+        &quot;/new-movie&quot;, view_func=views.movie_add_page, methods=[&quot;GET&quot;, &quot;POST&quot;]</span>
+<span class="gi">+    )</span>
+ 
+     db = Database()
+<span class="gd">-    db.add_movie(Movie(&quot;Slaughterhouse-Five&quot;, year=1972))</span>
+<span class="gd">-    db.add_movie(Movie(&quot;The Shining&quot;))</span>
+     app.config[&quot;db&quot;] = db
+ 
+     return app
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Now that we can add movies to the collection, we don’t need the sample movie
+data in the <code class="file docutils literal notranslate"><span class="pre">server.py</span></code> file anymore (lines 12-13).</p>
+<p>To make this page accessible from other pages, we add a link to the global
+navigation panel (<a class="reference internal" href="#lst-layout-v0401"><span class="std std-numref">Listing 4.4</span></a>, lines 8-10).</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<span id="lst-layout-v0401"></span><div class="code-block-caption"><span class="caption-number">Listing 4.4 </span><span class="caption-text">Navigation with link to movie addition page.
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">templates/layout.html</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0401</span></code>)</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="highlight-html notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span>        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;navbar-brand&quot;</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;navbar-item&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;button is-link&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{ url_for(&#39;home_page&#39;) }}&quot;</span><span class="p">&gt;</span>Home<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+          <span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;navbar-item&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;button is-link&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{ url_for(&#39;movies_page&#39;) }}&quot;</span><span class="p">&gt;</span>List movies<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+          <span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<span class="hll">          <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;navbar-item&quot;</span><span class="p">&gt;</span>
+</span><span class="hll">            <span class="p">&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;button is-link&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{ url_for(&#39;movie_add_page&#39;) }}&quot;</span><span class="p">&gt;</span>Add movie<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+</span><span class="hll">          <span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span>        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="posting-lists">
+<h2>4.2. Posting Lists<a class="headerlink" href="#posting-lists" title="Permalink to this headline">¶</a></h2>
+<p>Our next step is to delete movies from the collection. We will change
+the movie list page so that there will be a check box next to every movie.
+There will also be a delete button which, when clicked, will cause all checked
+movies to be deleted. First, we change the template for the movie list page
+as in <a class="reference internal" href="#lst-movies-v0402"><span class="std std-numref">Listing 4.5</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<span id="lst-movies-v0402"></span><div class="code-block-caption"><span class="caption-number">Listing 4.5 </span><span class="caption-text">Movie list template with check boxes for entries.
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">templates/movies.html</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0402</span></code>)</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
+<div class="highlight-html notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31</pre></div></td><td class="code"><div class="highlight"><pre><span></span>{% extends &quot;layout.html&quot; %}
+{% block title %}Movie list{% endblock %}
+{% block content %}
+    <span class="p">&lt;</span><span class="nt">h1</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Movies<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+
+    {% if movies %}
+    <span class="p">&lt;</span><span class="nt">form</span> <span class="na">action</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;post&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;movie_list&quot;</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">table</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;table is-striped is-fullwidth&quot;</span><span class="p">&gt;</span>
+        {% for movie_key, movie in movies %}
+        <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">label</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span><span class="p">&gt;</span>
+<span class="hll">              <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;movie_keys&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{ movie_key }}&quot;</span><span class="p">/&gt;</span>
+</span>            <span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{ url_for(&#39;movie_page&#39;, movie_key=movie_key) }}&quot;</span><span class="p">&gt;</span>
+              {{ movie.title }}
+              {% if movie.year %} ({{ movie.year }}) {% endif %}
+            <span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+          <span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+        {% endfor %}
+      <span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;field is-grouped&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;control&quot;</span><span class="p">&gt;</span>
+<span class="hll">          <span class="p">&lt;</span><span class="nt">button</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;button is-danger is-small&quot;</span><span class="p">&gt;</span>Delete<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+</span>        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+    {% endif %}
+{% endblock %}
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Since this page is now going to be used to post data to the server,
+the elements are placed into a form (between lines 7 and 29). The data
+will be posted to the same address, and the keys of the selected movies
+will be accumulated in the <code class="docutils literal notranslate"><span class="pre">movie_keys</span></code> variable (line 13). And finally,
+there is the <code class="docutils literal notranslate"><span class="pre">button</span></code> element for submitting the form (line 26).</p>
+<p>Like the <code class="docutils literal notranslate"><span class="pre">movie_add_page</span></code> handler, now the <code class="docutils literal notranslate"><span class="pre">movies_page</span></code> handler also needs
+to handle two types of requests. One for displaying the movies and letting
+the user select the movies to delete (<code class="docutils literal notranslate"><span class="pre">GET</span></code> method) and one for deleting
+the movies selected by the user (<code class="docutils literal notranslate"><span class="pre">POST</span></code> method).</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<span id="lst-views-v0402"></span><div class="code-block-caption"><span class="caption-number">Listing 4.6 </span><span class="caption-text">Handler for the movie removal page.
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">views.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0402</span></code>)</span><a class="headerlink" href="#id8" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">movies_page</span><span class="p">():</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;db&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
+        <span class="n">movies</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_movies</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;movies.html&quot;</span><span class="p">,</span> <span class="n">movies</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">movies</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+<span class="hll">        <span class="n">form_movie_keys</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="s2">&quot;movie_keys&quot;</span><span class="p">)</span>
+</span>        <span class="k">for</span> <span class="n">form_movie_key</span> <span class="ow">in</span> <span class="n">form_movie_keys</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">delete_movie</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">form_movie_key</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;movies_page&quot;</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>When posting a collection of data, we have to use the <code class="docutils literal notranslate"><span class="pre">getlist</span></code> method
+(<a class="reference internal" href="#lst-views-v0402"><span class="std std-numref">Listing 4.6</span></a>, line 7). In this example, the keys
+of the selected movies selected will be put into a list and assigned
+to the <code class="docutils literal notranslate"><span class="pre">movie_keys</span></code> variable.</p>
+<p>Also remember that the view function has to be adjusted to accept both <code class="docutils literal notranslate"><span class="pre">GET</span></code>
+and <code class="docutils literal notranslate"><span class="pre">POST</span></code> methods (<a class="reference internal" href="#lst-server-v0402"><span class="std std-numref">Listing 4.7</span></a>):</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<span id="lst-server-v0402"></span><div class="code-block-caption"><span class="caption-number">Listing 4.7 </span><span class="caption-text">App creation with new URL rule for movie removal.
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">server.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0402</span></code>)</span><a class="headerlink" href="#id9" title="Permalink to this code">¶</a></div>
+<div class="highlight-udiff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gd">--- /home/uyar/Projects/flask-tutorial/app/v0401/server.py</span>
+<span class="gi">+++ /home/uyar/Projects/flask-tutorial/app/v0402/server.py</span>
+<span class="gu">@@ -10,7 +10,9 @@</span>
+     app.config.from_object(&quot;settings&quot;)
+ 
+     app.add_url_rule(&quot;/&quot;, view_func=views.home_page)
+<span class="gd">-    app.add_url_rule(&quot;/movies&quot;, view_func=views.movies_page)</span>
+<span class="gi">+    app.add_url_rule(</span>
+<span class="gi">+        &quot;/movies&quot;, view_func=views.movies_page, methods=[&quot;GET&quot;, &quot;POST&quot;]</span>
+<span class="gi">+    )</span>
+     app.add_url_rule(&quot;/movies/&lt;int:movie_key&gt;&quot;, view_func=views.movie_page)
+     app.add_url_rule(
+         &quot;/new-movie&quot;, view_func=views.movie_add_page, methods=[&quot;GET&quot;, &quot;POST&quot;]
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="admonition-exercise-1 admonition">
+<p class="first admonition-title">Exercise 1</p>
+<p class="last">Add a link to the movie display page which, when clicked, will take the user
+to the movie edit page. The URL of the edit page has to have the extra path
+<code class="docutils literal notranslate"><span class="pre">/edit</span></code> after the movie display page URL. That means, for example,
+the edit page of movie with key 1 has to be <code class="docutils literal notranslate"><span class="pre">/movies/1/edit</span></code>.
+After saving, the movie has to be updated in the collection, and not added
+a second time. (<a class="reference internal" href="solutions.html#solutions-forms-edit"><span class="std std-ref">Solution</span></a>)</p>
+</div>
+</div>
+<div class="section" id="validating-inputs">
+<h2>4.3. Validating Inputs<a class="headerlink" href="#validating-inputs" title="Permalink to this headline">¶</a></h2>
+<p>A very important aspect of web application development is making sure that
+the data received from the outside world contains sensible values.
+This not only makes the application more robust with respect to user errors,
+it’s also crucial for preventing security issues. Any received data, such as
+values supplied by users, or values read from databases must be validated.</p>
+<p>At the moment, when editing movies, our view functions assume that
+the received movie data is valid. The HTML markup defines constraints
+for the inputs to enforce validity:</p>
+<ol class="arabic simple">
+<li>The <code class="docutils literal notranslate"><span class="pre">title</span></code> input is marked as required (<a class="reference internal" href="#lst-movie-edit-v0401"><span class="std std-numref">Listing 4.1</span></a>,
+line 10). So if the user leaves this field blank, the browser will
+not submit the form and force the user to fill it in.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">year</span></code> input has the type <code class="docutils literal notranslate"><span class="pre">number</span></code> with minimum and maximum allowed
+values (lines 17-18). So the browser won’t allow the user to send
+non-numeric symbols, or any value that’s not within this range.</li>
+</ol>
+<p>But these protections are not sufficient:</p>
+<ol class="arabic">
+<li><p class="first">Since the <code class="docutils literal notranslate"><span class="pre">title</span></code> input is required it can’t be left blank, but a title
+consisting of only whitespace is accepted.</p>
+</li>
+<li><p class="first">Even worse, it’s possible post any arbitrary data to the corresponding URL
+directly, bypassing any restriction defined in the HTML markup. For example,
+A non-numeric value for the <code class="docutils literal notranslate"><span class="pre">year</span></code> input can be sent by issuing
+the following command from the command line, causing the server to fail:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ curl --data &quot;title=Grease&amp;year=abc&quot; http://localhost:8080/new-movie
+...
+ValueError: invalid literal for int() with base 10: &#39;abc&#39;
+</pre></div>
+</div>
+</li>
+</ol>
+<p>To solve these problems, we’ll start by adding a function to validate
+the sent form (<a class="reference internal" href="#lst-validate-v0403"><span class="std std-numref">Listing 4.8</span></a>). This function will take a form
+as parameter and return whether there are any errors in it. It attaches
+two attributes to the form: one for data and one for the error messages
+(lines 2-3). For every input, it either adds an error entry if the value
+is not validated (as in line 7 for title), or it adds a data entry (as in
+line 9 for title). When adding the data entry, it also does type conversion
+if necessary (as in lines 17 and 21 for year). If all data is valid, errors
+will be empty and the function will return <code class="docutils literal notranslate"><span class="pre">True</span></code> (line 23).</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<span id="lst-validate-v0403"></span><div class="code-block-caption"><span class="caption-number">Listing 4.8 </span><span class="caption-text">Movie edit form validator function.
+(file: <code class="file docutils literal notranslate"><span class="pre">views.py</span></code>, version: <code class="docutils literal notranslate"><span class="pre">v0403</span></code>)</span><a class="headerlink" href="#id10" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">validate_movie_form</span><span class="p">(</span><span class="n">form</span><span class="p">):</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">form_title</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">form_title</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Title can not be blank.&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">form_title</span>
+
+    <span class="n">form_year</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;year&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">form_year</span><span class="p">:</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">form_year</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Year must consist of digits only.&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">form_year</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">year</span> <span class="o">&lt;</span> <span class="mi">1887</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">year</span> <span class="o">&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">):</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Year not in valid range.&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">year</span>
+
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Next, our movie addition page handler will call this function to validate
+the form it received (<a class="reference internal" href="#lst-views-add-v0403"><span class="std std-numref">Listing 4.9</span></a>, line 11). If the form
+is not valid, it will be rendered again, this time using the data
+in the submitted form as the default values (lines 13-18), so that the user
+won’t have to enter all fields again. If the form is valid, the data
+for the new movie can now be taken from the <code class="docutils literal notranslate"><span class="pre">data</span></code> attribute
+that was attached to the form by the validator function (lines 19-20).</p>
+<div class="literal-block-wrapper docutils container" id="id11">
+<span id="lst-views-add-v0403"></span><div class="code-block-caption"><span class="caption-number">Listing 4.9 </span><span class="caption-text">Movie addition with validation.
+(file: <code class="file docutils literal notranslate"><span class="pre">views.py</span></code>, version: <code class="docutils literal notranslate"><span class="pre">v0403</span></code>)</span><a class="headerlink" href="#id11" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">movie_add_page</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+            <span class="s2">&quot;movie_edit.html&quot;</span><span class="p">,</span>
+            <span class="n">min_year</span><span class="o">=</span><span class="mi">1887</span><span class="p">,</span>
+            <span class="n">max_year</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">validate_movie_form</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+                <span class="s2">&quot;movie_edit.html&quot;</span><span class="p">,</span>
+                <span class="n">min_year</span><span class="o">=</span><span class="mi">1887</span><span class="p">,</span>
+                <span class="n">max_year</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+<span class="hll">                <span class="n">values</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">,</span>
+</span>            <span class="p">)</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+        <span class="n">movie</span> <span class="o">=</span> <span class="n">Movie</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">)</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;db&quot;</span><span class="p">]</span>
+        <span class="n">movie_key</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">add_movie</span><span class="p">(</span><span class="n">movie</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;movie_page&quot;</span><span class="p">,</span> <span class="n">movie_key</span><span class="o">=</span><span class="n">movie_key</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Also remember that the validator attaches error messages to the form
+and these messages can now be displayed when the form is re-rendered after
+an invalid submission (<a class="reference internal" href="#lst-movie-edit-v0403"><span class="std std-numref">Listing 4.10</span></a>, lines 13-17 and 27-31).</p>
+<div class="literal-block-wrapper docutils container" id="id12">
+<span id="lst-movie-edit-v0403"></span><div class="code-block-caption"><span class="caption-number">Listing 4.10 </span><span class="caption-text">Movie edit form with error messages.
+(file: <code class="file docutils literal notranslate"><span class="pre">templates/movie_edit.html</span></code>, version: <code class="docutils literal notranslate"><span class="pre">v0403</span></code>)</span><a class="headerlink" href="#id12" title="Permalink to this code">¶</a></div>
+<div class="highlight-html notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</pre></div></td><td class="code"><div class="highlight"><pre><span></span>{% extends &quot;layout.html&quot; %}
+{% block title %}Edit movie{% endblock %}
+{% block content %}
+    <span class="p">&lt;</span><span class="nt">h1</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Edit movie<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">form</span> <span class="na">action</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;post&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;movie_edit&quot;</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;field&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;title&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">&gt;</span>Title<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;control&quot;</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;title&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;input&quot;</span> <span class="na">required</span><span class="o">=</span><span class="s">&quot;required&quot;</span>
+                 <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{ values[&#39;title&#39;] }}&quot;</span><span class="p">/&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="hll">        {% if &#39;title&#39; in values.errors %}
+</span><span class="hll">        <span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;help has-background-warning&quot;</span><span class="p">&gt;</span>
+</span><span class="hll">            {{ values.errors[&#39;title&#39;] }}
+</span><span class="hll">        <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span><span class="hll">        {% endif %}
+</span>      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;field&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;year&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">&gt;</span>Year<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;control&quot;</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;number&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;year&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;input&quot;</span>
+                 <span class="na">min</span><span class="o">=</span><span class="s">&quot;{{ min_year }}&quot;</span> <span class="na">max</span><span class="o">=</span><span class="s">&quot;{{ max_year }}&quot;</span>
+                 <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{ values[&#39;year&#39;] }}&quot;</span><span class="p">/&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="hll">        {% if &#39;year&#39; in values.errors %}
+</span><span class="hll">        <span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;help has-background-warning&quot;</span><span class="p">&gt;</span>
+</span><span class="hll">            {{ values.errors[&#39;year&#39;] }}
+</span><span class="hll">        <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span><span class="hll">        {% endif %}
+</span>      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;field is-grouped&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;control&quot;</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">button</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;button is-primary is-small&quot;</span><span class="p">&gt;</span>Save<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+{% endblock %}
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>And similar arrangements have to be made in the movie editing handler
+(<a class="reference internal" href="#lst-views-edit-v0403"><span class="std std-numref">Listing 4.11</span></a>).</p>
+<div class="literal-block-wrapper docutils container" id="id13">
+<span id="lst-views-edit-v0403"></span><div class="code-block-caption"><span class="caption-number">Listing 4.11 </span><span class="caption-text">Movie editing with validation.
+(file: <code class="file docutils literal notranslate"><span class="pre">views.py</span></code>, version: <code class="docutils literal notranslate"><span class="pre">v0403</span></code>)</span><a class="headerlink" href="#id13" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">movie_edit_page</span><span class="p">(</span><span class="n">movie_key</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span><span class="p">:</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;db&quot;</span><span class="p">]</span>
+        <span class="n">movie</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_movie</span><span class="p">(</span><span class="n">movie_key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">movie</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">movie</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">movie</span><span class="o">.</span><span class="n">year</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+            <span class="s2">&quot;movie_edit.html&quot;</span><span class="p">,</span>
+            <span class="n">min_year</span><span class="o">=</span><span class="mi">1887</span><span class="p">,</span>
+            <span class="n">max_year</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+<span class="hll">        <span class="n">valid</span> <span class="o">=</span> <span class="n">validate_movie_form</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">)</span>
+</span><span class="hll">        <span class="k">if</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
+</span><span class="hll">            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span>
+</span><span class="hll">                <span class="s2">&quot;movie_edit.html&quot;</span><span class="p">,</span>
+</span><span class="hll">                <span class="n">min_year</span><span class="o">=</span><span class="mi">1887</span><span class="p">,</span>
+</span><span class="hll">                <span class="n">max_year</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+</span><span class="hll">                <span class="n">values</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">,</span>
+</span><span class="hll">            <span class="p">)</span>
+</span><span class="hll">        <span class="n">title</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+</span><span class="hll">        <span class="n">year</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+</span>        <span class="n">movie</span> <span class="o">=</span> <span class="n">Movie</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">)</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;db&quot;</span><span class="p">]</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">update_movie</span><span class="p">(</span><span class="n">movie_key</span><span class="p">,</span> <span class="n">movie</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;movie_page&quot;</span><span class="p">,</span> <span class="n">movie_key</span><span class="o">=</span><span class="n">movie_key</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="admonition-exercise-2 admonition">
+<p class="first admonition-title">Exercise 2</p>
+<p class="last">Replace the input validation mechanism with an implementation that uses
+the <a class="reference external" href="https://flask-wtf.readthedocs.io/">Flask-WTF</a> plugin. Also make use of its CSRF protection features.
+For handling <code class="docutils literal notranslate"><span class="pre">number</span></code> type inputs, use the <a class="reference external" href="https://wtforms-components.readthedocs.io/">wtforms_components</a> package.
+(<a class="reference internal" href="solutions.html#solutions-forms-wtf"><span class="std std-ref">Solution</span></a>)</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="logins.html" class="btn btn-neutral float-right" title="5. Logins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="data-model.html" class="btn btn-neutral" title="3. Data Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2018, H. Turgut Uyar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

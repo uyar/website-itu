@@ -1,0 +1,232 @@
+Logins
+======
+
+As our next step, we want to make sure that only authenticated users will be
+able to modify the collection. So we'll need a way of logging users in to and
+out of our site. We'll create two users: the ``normaluser`` (password
+``normaluserpw``) will be able to edit existing movies, but only the ``admin``
+(password ``adminpw``) user will be able to add or delete movies.
+
+
+Storing Passwords
+-----------------
+
+Applications should never store passwords in plain text, or even encrypted.
+The correct way to store a password is after hashing it.
+The `passlib <https://passlib.readthedocs.io/>`_ package provides the necessary
+tools for storing passwords securely. After installing it, you can hash
+a password as shown in the example Python session below:
+
+.. code-block:: python
+
+   >>> from passlib.hash import pbkdf2_sha256 as hasher
+   >>> password = "adminpw"
+   >>> hashed = hasher.hash(password)
+   >>> hashed
+   '$pbkdf2-sha256$29000$PIdwDqH03hvjXAuhlLL2Pg$B1K8TX6Efq3GzvKlxDKIk4T7yJzIIzsuSegjZ6hAKLk'
+
+Later, when a user supplies a password, you can check whether it's the correct
+password or not by verifying it against the hashed value:
+
+.. code-block:: python
+
+   >>> hasher.verify("admin_pw", hashed)
+   False
+   >>> hasher.verify("adminpw", hashed)
+   True
+
+.. _passlib: https://passlib.readthedocs.io/
+
+Although the proper place to store hashed passwords would be a file
+or a database, for this example we're going to store them in the settings file
+as a map from usernames to passwords (:numref:`lst_settings_v0501`).
+The ``ADMIN_USERS`` setting lists the usernames who have administrative
+privileges.
+
+.. _lst_settings_v0501:
+.. literalinclude:: ../../app/v0501/settings.py
+   :caption: Setting for passwords
+             (file: :file:`settings.py`, version: ``v0501``).
+   :language: python
+   :linenos:
+
+
+Login Management
+----------------
+
+For handling login management, we'll use
+the `Flask-Login <https://flask-login.readthedocs.io/>`_ plugin. This plugin
+requires us to implement a class for representing users on our site
+(:numref:`lst_user_v0501`). Our user data basically consists of a username and
+a password. Flask-Login assumes that there will be a unique string value
+for identifying each user. In most cases, this will be the string value
+of the database id number for a user. In our example, we will use the username
+for this purpose. Flask-Login also keeps an attribute for checking whether
+a user is active or not (line 9). And we add an attribute for marking users
+with administrative privileges (line 10). For details about how Flask-Login
+represents users, check out its documentation.
+
+.. _lst_user_v0501:
+.. literalinclude:: ../../app/v0501/user.py
+   :caption: Model class for users
+             (file: :file:`user.py`, version: ``v0501``).
+   :language: python
+   :linenos:
+   :emphasize-lines: 9, 10
+
+We also implement a function that given a user's id, returns the user
+object associated with that id (lines 20-25). It first checks whether
+there is an entry in the passwords map, and if so, creates the user object
+(lines 21-22). It also sets the ``is_admin`` property according to the user
+being in the ``ADMIN_USERS`` settings or not (line 24).
+
+To incorporate Flask-Login, we have to instantiate a ``LoginManager``
+(lines 2 and 10) and add it to our application (line 42). We add two URL rules
+for the login and logout pages (lines 24-27). If a visitor makes a request
+to a protected page without logging in, we can redirect the request
+to the login page by setting the ``login_view`` property of the login manager
+(line 43). And finally, a user loader function will be responsible for creating
+a user object from the user id in the session (lines 7 and 13-15).
+
+.. _lst_server_v0501:
+.. literalinclude:: ../../app/v0501/server.py
+   :caption: Application with login manager
+             (file: :file:`server.py`, version: ``v0501``).
+   :language: python
+   :linenos:
+   :emphasize-lines: 2, 7, 10, 13-15, 24-27, 42, 43
+
+Let us start by creating a form for our login page (:numref:`lst_forms_v0501`).
+
+.. _lst_forms_v0501:
+.. literalinclude:: ../../app/v0501/forms.py
+   :caption: Login page form
+             (file: :file:`forms.py`, version: ``v0501``).
+   :language: python
+   :lines: 9-12
+   :linenos:
+
+Next, we add the template for this form (:numref:`lst_login_v0501`).
+
+.. _lst_login_v0501:
+.. literalinclude:: ../../app/v0501/templates/login.html
+   :caption: Login page template
+             (file: :file:`templates/login.html`, version: ``v0501``).
+   :language: html
+   :linenos:
+
+The navigation part of the layout template is given in
+:numref:`lst_layout_login_v0501`. Note the following changes:
+
+- If the visitor is not logged in, a login link is displayed (line 16).
+- If the visitor is logged in, the username is displayed along with a logout
+  link (lines 18-19).
+- The menu item for adding a movie is only shown to administrative users
+  (lines 9-13).
+
+.. _lst_layout_login_v0501:
+.. literalinclude:: ../../app/v0501/templates/layout.html
+   :caption: Base layout with login link
+             (file: :file:`templates/layout.html`, version: ``v0501``).
+   :language: html
+   :lines: 14-36
+   :linenos:
+   :emphasize-lines: 9-13, 15-20
+
+The view functions for the login and logout pages are given in
+:numref:`lst_views_login_v0501`. The supplied username will be used
+to get a user object from the registered users (lines 4-5). If such a user
+is found, it will have a hashed ``password`` attribute which can be checked
+against the password sent by the user (lines 7-8). Flask-Login provides
+functions for handling the login and logout operations easily (lines 9 and
+18).
+
+.. _lst_views_login_v0501:
+.. literalinclude:: ../../app/v0501/views.py
+   :caption: Handlers for login and logout pages
+             (file: :file:`views.py`, version: ``v0501``).
+   :language: python
+   :lines: 19-38
+   :linenos:
+   :emphasize-lines: 9, 18
+
+The redirection to the next page (lines 11-12) is needed to handle the cases
+where the user will be automatically redirected when accessing protected pages.
+For example, if an anonymous user visits the ``/movies/add`` page, they will be
+redirected to the login page (because of the ``login_view`` setting,
+:numref:`lst_server_v0501`, line 43), and after successfully logging in,
+this part will redirect the user back to the movie addition page.
+
+Another feature provided by Flask is to easily display messages to logged-in
+users. The ``flash`` function registers a message that the user will see
+on the next page (lines 10 and 19). To display these messages, we have to add
+the necessary markup to the base layout template (:numref:`lst_layout_v0501`,
+lines 2-4).
+
+.. _lst_layout_v0501:
+.. literalinclude:: ../../app/v0501/templates/layout.html
+   :caption: Base layout with notification messages
+             (file: :file:`templates/layout.html`, version: ``v0501``).
+   :language: html
+   :linenos:
+   :lines: 39-49
+   :emphasize-lines: 2-4
+
+We can simply protect a page by adding the ``login_required`` decorator
+to its view function. For example, to make sure that only authenticated users
+can add or edit movie data we can decorate the relevant view functions
+(:numref:`lst_views_v0501`).
+
+.. _lst_views_v0501:
+.. literalinclude:: ../../app/v0501/views.py
+   :caption: Protecting the movie add and edit pages
+             (file: :file:`views.py`, version: ``v0501``).
+   :language: python
+   :lines: 64-
+   :linenos:
+   :emphasize-lines: 1, 17, 3-4
+
+In addition to the login requirement, we also want to prevent normal users
+from adding movies, so we add role based protections to the view function
+(:numref:`lst_views_v0501`, lines 3-4). In this example, the ``abort``
+function will cause an "Unauthorized" error due to the 401 HTTP status code.
+Similarly, to prevent normal users from deleting movies we modify
+the movie page view function (:numref:`lst_views_delete_v0501`, lines 7-8).
+Note that this page is not login protected.
+
+.. _lst_views_delete_v0501:
+.. literalinclude:: ../../app/v0501/views.py
+   :caption: Protecting the movie delete operation
+             (file: :file:`views.py`, version: ``v0501``).
+   :language: python
+   :lines: 41-54
+   :linenos:
+   :emphasize-lines: 7-8
+
+It would be a good idea to reflect these protections to the templates and
+to not display any operations for which the user doesn't have the necessary
+privileges. For example, we can organize the movie display template as in
+:numref:`lst_movie_v0501` (lines 19 and 26) so they won't see the movie
+edit button at all.
+
+.. _lst_movie_v0501:
+.. literalinclude:: ../../app/v0501/templates/movie.html
+   :caption: Showing the edit button only to authenticated users
+             (file: :file:`templates/movie.html`, version: ``v0501``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 19, 26
+
+We also have to modify the template (:numref:`lst_delete_v0501`) for movie
+deletions in order to restrict the operation to administrative users. Here,
+we're not only hiding the delete button from non-administrative users
+(lines 26-32), we're also hiding the check boxes (lines 12-16) because they
+wouldn't make sense without the button.
+
+.. _lst_delete_v0501:
+.. literalinclude:: ../../app/v0501/templates/movies.html
+   :caption: Protecting the delete operation
+             (file: :file:`templates/movies.html`, version: ``v0501``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 12-16, 26-32

@@ -1,0 +1,187 @@
+Data Model
+==========
+
+In this chapter, we'll create the Python classes in our data model,
+i.e. the classes for movies and movie collections. And then we'll populate
+the movie list page with some test data. The resulting page will look as in
+:numref:`fig_model_movies`. [#bulma]_
+
+.. _fig_model_movies:
+.. figure:: ./figures/model_movies.png
+   :align: center
+   :alt: Screenshot of movie list page with test data.
+
+   Movie list page populated with test data.
+
+
+Model Classes
+-------------
+
+To represent movies in the application, we implement a simple ``Movie`` class
+(:numref:`lst_movie_class_v0301`). Initially, a movie has only a title and
+an optional year.
+
+.. _lst_movie_class_v0301:
+.. literalinclude:: ../../app/v0301/movie.py
+   :caption: Initial implementation of the movie class
+             (file: :file:`movie.py`, version: ``v0301``).
+   :language: python
+   :linenos:
+
+Next, we implement a class to manage our database. It stores the movie objects
+in a dictionary (line 6) and provides methods for interacting with it,
+such as for adding or deleting movies (:numref:`lst_database_v0301`).
+To keep track of the movies, it keeps a counter (line 7) that gets incremented
+whenever a new movie is added to the collection and the next counter value
+is used as the key of the added movie (lines 10-11). This key value is also
+returned so that the caller knows which key was assigned (line 12).
+
+.. _lst_database_v0301:
+.. literalinclude:: ../../app/v0301/database.py
+   :caption: Initial implementation of the database class
+             (file: :file:`database.py`, version: ``v0301``).
+   :language: python
+   :linenos:
+
+Note that the implementation returns newly created movie objects
+instead of the ones in the collection. This is to make sure that the data
+can not be modified by the caller. And the result of the ``get_movies`` method
+is a list of pairs where each pair consists of the movie's key
+and the movie object itself.
+
+When creating the application (:numref:`lst_server_v0301`), we also initialize
+the database (line 15). Since we don't have a data source to supply us
+with movie data at the moment, we add some sample data so that we can test
+the application (lines 16-17). And we store the database object
+in the configuration to make it accessible to all components in the application
+(line 18).
+
+.. _lst_server_v0301:
+.. literalinclude:: ../../app/v0301/server.py
+   :caption: Application creation with data store
+             (file: :file:`server.py`, version: ``v0301``).
+   :language: python
+   :linenos:
+   :emphasize-lines: 15-18
+
+
+Control Flow in Templates
+-------------------------
+
+Now that we have a database in the application, the ``movies_page``
+view function can send movie data to the template to be displayed
+(:numref:`lst_views_v0301`). Since the database is stored in the application's
+configuration we need a way of accessing the application object
+from the view function. We do this by importing ``current_app`` (line 3).
+After that, the database can be accessed through the configuration (line 13).
+
+.. _lst_views_v0301:
+.. literalinclude:: ../../app/v0301/views.py
+   :caption: Movies page handler getting data from application
+             (file: :file:`views.py`, version: ``v0301``).
+   :language: python
+   :linenos:
+   :emphasize-lines: 3, 13
+
+We pass the list of ``(movie key, movie)`` pairs that are returned
+by the ``get_movies`` method to the template in sorted order (line 15).
+Since the default sorting mechanism on pairs sorts on the first element,
+the movies will be sorted in ascending order of their keys.
+
+To display the movies, we need an iteration mechanism in the movie list
+template (:numref:`lst_movies_v0301`). The ``{% for ... %}`` and
+``{% endfor %}`` directives let us iterate over the elements of a collection
+and generate the markup between these directives for each element.
+In our example, this will generate a ``tr`` element for each movie
+in the ``movies`` sequence (lines 8-15).
+
+For every movie, we want to show the year in parentheses if the year is set;
+but if not, we don't want to display empty parentheses. So we use
+an ``{% if ... %}`` directive to include that markup only if the ``year``
+attribute of the movie contains some data (line 12). Also, we don't want
+to generate an empty ``table`` element if there are no movies in the collection
+(lines 6 and 17).
+
+.. _lst_movies_v0301:
+.. literalinclude:: ../../app/v0301/templates/movies.html
+   :caption: Movie list template using iteration
+             (file: :file:`templates/movies.html`, version: ``v0301``).
+   :language: html
+   :linenos:
+   :emphasize-lines: 6-17
+
+
+Parametric Routes
+-----------------
+
+Next, we want to add a page that will display a movie. To identify a movie
+in the collection, we will use its key value as part of its URL. For example,
+the route ``/movies/1`` will refer to the movie with key ``1``. The movie page
+will look like in :numref:`fig_model_movie`.
+
+.. _fig_model_movie:
+.. figure:: ./figures/model_movie.png
+   :align: center
+   :alt: Screenshot of movie display page.
+
+   The movie display page.
+
+Let's start with the movie page template. Assuming it gets the movie object
+as a parameter named ``movie``, the template code will be as in
+:numref:`lst_movie_v0302`.
+
+.. _lst_movie_v0302:
+.. literalinclude:: ../../app/v0302/templates/movie.html
+   :caption: Movie page template
+             (file: :file:`templates/movie.html`, version: ``v0302``).
+   :language: html
+   :linenos:
+
+The view function (:numref:`lst_views_v0302`, lines 18-21) takes
+the movie key as a parameter and uses it to get the movie from the database
+and send it to the template.
+
+.. _lst_views_v0302:
+.. literalinclude:: ../../app/v0302/views.py
+   :caption: Movie page view function with movie key parameter
+             (file: :file:`views.py`, version: ``v0302``).
+   :language: python
+   :linenos:
+   :emphasize-lines: 18-21
+
+For this to work, we have to tell Flask to send the movie key part of the route
+(e.g. the ``1`` in ``/movies/1``) as a parameter to the handler. Also note that
+we have to make sure that the movie key is sent as an integer and
+not as a string. Flask handles such parametric routes by marking parts
+of the route in angular brackets. The added line in :numref:`lst_server_v0302`
+states that the second part of the URL will be mapped to the ``movie_key``
+parameter in the function after getting converted to an integer.
+
+.. _lst_server_v0302:
+.. literalinclude:: ../../app/v0302/server.py
+   :caption: URL setup with parametric route
+             (file: :file:`server.py`, version: ``v0302``).
+   :language: python
+   :diff: ../../app/v0301/server.py
+   :linenos:
+
+
+.. admonition:: Exercise 1
+
+   Organize the movie list page so that the entries are links to pages
+   that will display the selected movie. *Hint*: You will need to check
+   the documentation for the ``url_for`` function about handling
+   parametric routes. (:ref:`Solution <solutions_model_links>`)
+
+
+.. admonition:: Exercise 2
+
+   Organize the code so that if a movie with the given key doesn't exist
+   the application will generate an HTTP "Not Found" (404) error.
+   (:ref:`Solution <solutions_model_not_found>`)
+
+
+.. [#bulma]
+
+   The screenshots after this point assume that the Bulma exercise
+   in the previous chapter has been completed.

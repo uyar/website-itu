@@ -1,0 +1,455 @@
+**********************
+Solutions to Exercises
+**********************
+
+:Chapter: :doc:`basics`
+
+.. _solutions_basics_1:
+
+:Exercise:
+   Add a link from the movie list page to the home page.
+
+:file:`MovieListPage.html`
+
+.. code-block:: html
+   :linenos:
+
+   <!DOCTYPE html>
+   <html xmlns:wicket="http://wicket.apache.org">
+     <head>
+       <meta charset="utf-8" />
+       <title>MovieDB - Movie List</title>
+       <link rel="stylesheet" href="style.css" />
+     </head>
+     <body>
+       <h2>Movie List</h2>
+
+       <ul>
+         <li><a href="#" wicket:id="home">Home</a></li>
+       </ul>
+     </body>
+   </html>
+
+:file:`MovieListPage.java`
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import org.apache.wicket.markup.html.WebPage;
+   import org.apache.wicket.markup.html.link.Link;
+
+   public class MovieListPage extends WebPage {
+       public MovieListPage() {
+           Link homePageLink = new Link("home") {
+               @Override
+               public void onClick() {
+                   this.setResponsePage(new HomePage());
+               }
+           };
+           this.add(homePageLink);
+       }
+   }
+
+.. note::
+
+   You can see the changes needed to solve this exercise at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/eda07d059353.
+   You can get a copy of this version by clicking on the download link on that
+   page.
+
+:Chapter: :doc:`application-structure`
+
+.. _solutions_structure_1:
+
+:Exercise:
+   Arrange the movie list page so that it will use the same navigation panel
+   and footer.
+
+:file:`MovieListPage.html`
+
+.. code-block:: html
+   :linenos:
+
+   <!DOCTYPE html>
+   <html xmlns:wicket="http://wicket.apache.org">
+     <head>
+       <meta charset="utf-8" />
+       <title>MovieDB - Movie List</title>
+       <link rel="stylesheet" href="style.css" />
+     </head>
+     <body>
+       <header>
+         <nav wicket:id="mainNavigation">
+           navigation links
+         </nav>
+       </header>
+
+       <h2>Movie List</h2>
+
+       <footer>
+         <div id="datetime" wicket:id="datetime">
+            Wed Sep 4 15:32:40 EEST 2013
+         </div>
+       </footer>
+     </body>
+   </html>
+
+:file:`MovieListPage.java`
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   public class MovieListPage extends BasePage {
+       public MovieListPage() {
+       }
+   }
+
+.. note::
+
+   You can see the changes needed to solve this exercise at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/bc187a53483d.
+   You can get a copy of this version by clicking on the download link on that
+   page.
+
+:Chapter: :doc:`data-model`
+
+.. _solutions_model_1:
+
+:Exercise:
+   Add a page that will display a movie. Then, organize the movie list page so
+   that the entries are links to pages that will display the selected movie.
+
+:file:`MovieDisplayPage.html`
+
+.. code-block:: html
+   :linenos:
+
+   <!DOCTYPE html>
+   <html xmlns:wicket="http://wicket.apache.org">
+     <head>
+       <meta charset="utf-8" />
+       <title>MovieDB - Movie</title>
+       <link rel="stylesheet" href="style.css" />
+     </head>
+     <body>
+       <header>
+         <nav wicket:id="mainNavigation">
+           navigation links
+         </nav>
+       </header>
+
+       <h2 wicket:id="title">The Matrix</h2>
+       <table>
+           <tr>
+               <th>Year:</th>
+               <td wicket:id="year">1999</td>
+           </tr>
+       </table>
+
+       <footer>
+         <div id="datetime" wicket:id="datetime">
+            Wed Sep 4 15:32:40 EEST 2013
+         </div>
+       </footer>
+     </body>
+   </html>
+
+:file:`MovieDisplayPage.java`
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import org.apache.wicket.markup.html.basic.Label;
+
+   public class MovieDisplayPage extends BasePage {
+       public MovieDisplayPage(Movie movie) {
+           this.add(new Label("title", movie.getTitle()));
+           this.add(new Label("year", movie.getYear().toString()));
+       }
+   }
+
+:file:`MovieDisplayPageLink.java`
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import org.apache.wicket.markup.html.link.Link;
+
+   public class MovieDisplayPageLink extends Link {
+       private Movie _movie;
+
+       public MovieDisplayPageLink(String id, Movie movie) {
+           super(id);
+           this._movie = movie;
+       }
+
+       @Override
+       public void onClick() {
+           this.setResponsePage(new MovieDisplayPage(this._movie));
+       }
+   }
+
+:file:`MovieListPage.html`
+
+.. code-block:: html
+   :linenos:
+
+   <!DOCTYPE html>
+   <html xmlns:wicket="http://wicket.apache.org">
+     <head>
+       <meta charset="utf-8" />
+       <title>MovieDB - Movie List</title>
+       <link rel="stylesheet" href="style.css" />
+     </head>
+     <body>
+       <header>
+         <nav wicket:id="mainNavigation">
+           navigation links
+         </nav>
+       </header>
+
+       <h2>Movie List</h2>
+
+       <table>
+         <tr wicket:id="movie_list">
+           <td>
+             <a href="#" wicket:id="movie_link">
+               <span wicket:id="title">The Matrix</span>
+               (<span wicket:id="year">1999</span>)
+             </a>
+           </td>
+         </tr>
+       </table>
+
+       <footer>
+         <div id="datetime" wicket:id="datetime">
+            Wed Sep 4 15:32:40 EEST 2013
+         </div>
+       </footer>
+     </body>
+   </html>
+
+:file:`MovieListPage.java`
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import java.util.List;
+
+   import org.apache.wicket.markup.html.basic.Label;
+   import org.apache.wicket.markup.html.list.ListItem;
+   import org.apache.wicket.markup.html.list.PropertyListView;
+
+   public class MovieListPage extends BasePage {
+       public MovieListPage() {
+           WicketApplication app = (WicketApplication) this.getApplication();
+           MovieCollection collection = app.getCollection();
+           List<Movie> movies = collection.getMovies();
+
+           PropertyListView movieListView =
+                   new PropertyListView("movie_list", movies) {
+                       @Override
+                       protected void populateItem(ListItem item) {
+                           Movie movie = (Movie) item.getModelObject();
+                           MovieDisplayPageLink movieLink =
+                                   new MovieDisplayPageLink("movie_link", movie);
+                           movieLink.add(new Label("title"));
+                           movieLink.add(new Label("year"));
+                           item.add(movieLink);                    }
+                   };
+           this.add(movieListView);
+       }
+   }
+
+.. note::
+
+   You can see the changes needed to solve this exercise at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/37f420ee88e2.
+   You can get a copy of this version by clicking on the download link on that
+   page.
+
+:Chapter: :doc:`forms`
+
+.. _solutions_forms_1:
+
+:Exercise:
+   Add a link to the movie display page which, when clicked, will take the
+   user to the movie edit page. After saving, the movie should be updated in
+   the collection (not added a second time).
+
+:file:`MovieCollection.java`
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import java.util.LinkedList;
+   import java.util.List;
+
+   public class MovieCollection {
+       private List<Movie> _movies;
+
+       public MovieCollection() {
+           this._movies = new LinkedList<Movie>();
+       }
+
+       public List<Movie> getMovies() {
+           return this._movies;
+       }
+
+       public void addMovie(Movie movie) {
+           this._movies.add(movie);
+       }
+
+       public void deleteMovie(Movie movie) {
+           this._movies.remove(movie);
+       }
+
+       public void updateMovie(Movie movie) {
+       }
+   }
+
+:file:`MovieEditForm.java`
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import org.apache.wicket.markup.html.form.Form;
+   import org.apache.wicket.markup.html.form.TextField;
+   import org.apache.wicket.model.CompoundPropertyModel;
+
+   public class MovieEditForm extends Form {
+       private boolean _newMovie;
+
+       public MovieEditForm(String id, Movie movie, boolean newMovie) {
+           super(id);
+
+           CompoundPropertyModel model = new CompoundPropertyModel(movie);
+           this.setModel(model);
+
+           this.add(new TextField("title"));
+           this.add(new TextField("year"));
+
+           this._newMovie = newMovie;
+       }
+
+       @Override
+       public void onSubmit() {
+           Movie movie = (Movie) this.getModelObject();
+           WicketApplication app = (WicketApplication) this.getApplication();
+           MovieCollection collection = app.getCollection();
+           if (this._newMovie)
+               collection.addMovie(movie);
+           else
+               collection.updateMovie(movie);
+           this.setResponsePage(new MovieDisplayPage(movie));
+       }
+   }
+
+:file:`MovieEditPage.java`
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   public final class MovieEditPage extends BasePage {
+       public MovieEditPage(Movie movie) {
+           this.add(new MovieEditForm("movie_edit", movie, true));
+       }
+
+       public MovieEditPage(Movie movie, boolean newMovie) {
+           this.add(new MovieEditForm("movie_edit", movie, newMovie));
+       }
+   }
+
+:file:`MovieDisplayPage.html`
+
+.. code-block:: html
+   :linenos:
+
+   <!DOCTYPE html>
+   <html xmlns:wicket="http://wicket.apache.org">
+     <head>
+       <meta charset="utf-8" />
+       <title>MovieDB - Movie</title>
+       <link rel="stylesheet" href="style.css" />
+     </head>
+     <body>
+       <header>
+         <nav wicket:id="mainNavigation">
+           navigation links
+         </nav>
+       </header>
+
+       <h2 wicket:id="title">The Matrix</h2>
+       <table>
+           <tr>
+               <th>Year:</th>
+               <td wicket:id="year">1999</td>
+           </tr>
+       </table>
+
+       <p><a href="#" wicket:id="edit_link">Edit</a></p>
+
+       <footer>
+         <div id="datetime" wicket:id="datetime">
+            Wed Sep 4 15:32:40 EEST 2013
+         </div>
+       </footer>
+     </body>
+   </html>
+
+:file:`MovieDisplayPage.java`
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import org.apache.wicket.markup.html.basic.Label;
+   import org.apache.wicket.markup.html.link.Link;
+
+   public class MovieDisplayPage extends BasePage {
+       private Movie _movie;
+
+       public MovieDisplayPage(Movie movie) {
+           this._movie = movie;
+
+           this.add(new Label("title", movie.getTitle()));
+           this.add(new Label("year", movie.getYear().toString()));
+
+           Link editLink = new Link("edit_link") {
+               @Override
+               public void onClick() {
+                   MovieDisplayPage parent = (MovieDisplayPage) this.getParent();
+                   this.setResponsePage(new MovieEditPage(parent.getMovie(), false));
+               }
+           };
+           this.add(editLink);
+       }
+
+       public Movie getMovie() {
+           return this._movie;
+       }
+   }
+
+.. note::
+
+   You can see the changes needed to solve this exercise at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/1f8b53f98f79.
+   You can get a copy of this version by clicking on the download link on that
+   page.

@@ -1,0 +1,644 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3. Data Model &mdash; Flask Tutorial</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4. Forms" href="forms.html" />
+    <link rel="prev" title="2. Application Structure" href="application-structure.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Flask Application Development
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="basics.html">1. Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="application-structure.html">2. Application Structure</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Data Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#model-classes">3.1. Model Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#control-flow-in-templates">3.2. Control Flow in Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parametric-routes">3.3. Parametric Routes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="forms.html">4. Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logins.html">5. Logins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="persistence.html">6. Persistence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solutions.html">7. Solutions to Exercises</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Flask Application Development</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>3. Data Model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="data-model">
+<h1>3. Data Model<a class="headerlink" href="#data-model" title="Permalink to this headline">¶</a></h1>
+<p>In this chapter, we’ll create the Python classes in our data model,
+i.e. the classes for movies and movie collections. And then we’ll populate
+the movie list page with some test data. The resulting page will look as in
+<a class="reference internal" href="#fig-model-movies"><span class="std std-numref">Fig. 3.1</span></a>. <a class="footnote-reference" href="#bulma" id="id1">[1]</a></p>
+<div class="figure align-center" id="id2">
+<span id="fig-model-movies"></span><img alt="Screenshot of movie list page with test data." src="_images/model_movies.png" />
+<p class="caption"><span class="caption-number">Fig. 3.1 </span><span class="caption-text">Movie list page populated with test data.</span></p>
+</div>
+<div class="section" id="model-classes">
+<h2>3.1. Model Classes<a class="headerlink" href="#model-classes" title="Permalink to this headline">¶</a></h2>
+<p>To represent movies in the application, we implement a simple <code class="docutils literal notranslate"><span class="pre">Movie</span></code> class
+(<a class="reference internal" href="#lst-movie-class-v0301"><span class="std std-numref">Listing 3.1</span></a>). Initially, a movie has only a title and
+an optional year.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<span id="lst-movie-class-v0301"></span><div class="code-block-caption"><span class="caption-number">Listing 3.1 </span><span class="caption-text">Initial implementation of the movie class
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">movie.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0301</span></code>).</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Movie</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="o">=</span> <span class="n">year</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Next, we implement a class to manage our database. It stores the movie objects
+in a dictionary (line 6) and provides methods for interacting with it,
+such as for adding or deleting movies (<a class="reference internal" href="#lst-database-v0301"><span class="std std-numref">Listing 3.2</span></a>).
+To keep track of the movies, it keeps a counter (line 7) that gets incremented
+whenever a new movie is added to the collection and the next counter value
+is used as the key of the added movie (lines 10-11). This key value is also
+returned so that the caller knows which key was assigned (line 12).</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<span id="lst-database-v0301"></span><div class="code-block-caption"><span class="caption-number">Listing 3.2 </span><span class="caption-text">Initial implementation of the database class
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">database.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0301</span></code>).</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">movie</span> <span class="kn">import</span> <span class="n">Movie</span>
+
+
+<span class="k">class</span> <span class="nc">Database</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">movies</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_movie_key</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">add_movie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">movie</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_movie_key</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">movies</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_movie_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">movie</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_movie_key</span>
+
+    <span class="k">def</span> <span class="nf">delete_movie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">movie_key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">movie_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">movies</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">movies</span><span class="p">[</span><span class="n">movie_key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">get_movie</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">movie_key</span><span class="p">):</span>
+        <span class="n">movie</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">movies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">movie_key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">movie</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="n">movie_</span> <span class="o">=</span> <span class="n">Movie</span><span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">movie</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">movie_</span>
+
+    <span class="k">def</span> <span class="nf">get_movies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">movies</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">movie_key</span><span class="p">,</span> <span class="n">movie</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">movies</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">movie_</span> <span class="o">=</span> <span class="n">Movie</span><span class="p">(</span><span class="n">movie</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">movie</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+            <span class="n">movies</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">movie_key</span><span class="p">,</span> <span class="n">movie_</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">movies</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Note that the implementation returns newly created movie objects
+instead of the ones in the collection. This is to make sure that the data
+can not be modified by the caller. And the result of the <code class="docutils literal notranslate"><span class="pre">get_movies</span></code> method
+is a list of pairs where each pair consists of the movie’s key
+and the movie object itself.</p>
+<p>When creating the application (<a class="reference internal" href="#lst-server-v0301"><span class="std std-numref">Listing 3.3</span></a>), we also initialize
+the database (line 15). Since we don’t have a data source to supply us
+with movie data at the moment, we add some sample data so that we can test
+the application (lines 16-17). And we store the database object
+in the configuration to make it accessible to all components in the application
+(line 18).</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<span id="lst-server-v0301"></span><div class="code-block-caption"><span class="caption-number">Listing 3.3 </span><span class="caption-text">Application creation with data store
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">server.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0301</span></code>).</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+
+<span class="kn">import</span> <span class="nn">views</span>
+<span class="kn">from</span> <span class="nn">database</span> <span class="kn">import</span> <span class="n">Database</span>
+<span class="kn">from</span> <span class="nn">movie</span> <span class="kn">import</span> <span class="n">Movie</span>
+
+
+<span class="k">def</span> <span class="nf">create_app</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">views</span><span class="o">.</span><span class="n">home_page</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span><span class="s2">&quot;/movies&quot;</span><span class="p">,</span> <span class="n">view_func</span><span class="o">=</span><span class="n">views</span><span class="o">.</span><span class="n">movies_page</span><span class="p">)</span>
+
+<span class="hll">    <span class="n">db</span> <span class="o">=</span> <span class="n">Database</span><span class="p">()</span>
+</span><span class="hll">    <span class="n">db</span><span class="o">.</span><span class="n">add_movie</span><span class="p">(</span><span class="n">Movie</span><span class="p">(</span><span class="s2">&quot;Slaughterhouse-Five&quot;</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="mi">1972</span><span class="p">))</span>
+</span><span class="hll">    <span class="n">db</span><span class="o">.</span><span class="n">add_movie</span><span class="p">(</span><span class="n">Movie</span><span class="p">(</span><span class="s2">&quot;The Shining&quot;</span><span class="p">))</span>
+</span><span class="hll">    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;db&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span>
+</span>
+    <span class="k">return</span> <span class="n">app</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">()</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PORT&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="control-flow-in-templates">
+<h2>3.2. Control Flow in Templates<a class="headerlink" href="#control-flow-in-templates" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have a database in the application, the <code class="docutils literal notranslate"><span class="pre">movies_page</span></code>
+view function can send movie data to the template to be displayed
+(<a class="reference internal" href="#lst-views-v0301"><span class="std std-numref">Listing 3.4</span></a>). Since the database is stored in the application’s
+configuration we need a way of accessing the application object
+from the view function. We do this by importing <code class="docutils literal notranslate"><span class="pre">current_app</span></code> (line 3).
+After that, the database can be accessed through the configuration (line 13).</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<span id="lst-views-v0301"></span><div class="code-block-caption"><span class="caption-number">Listing 3.4 </span><span class="caption-text">Movies page handler getting data from application
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">views.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0301</span></code>).</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="hll"><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">render_template</span>
+</span>
+
+<span class="k">def</span> <span class="nf">home_page</span><span class="p">():</span>
+    <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+    <span class="n">day_name</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%A&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;home.html&quot;</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="n">day_name</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">movies_page</span><span class="p">():</span>
+<span class="hll">    <span class="n">db</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;db&quot;</span><span class="p">]</span>
+</span>    <span class="n">movies</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_movies</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;movies.html&quot;</span><span class="p">,</span> <span class="n">movies</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">movies</span><span class="p">))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>We pass the list of <code class="docutils literal notranslate"><span class="pre">(movie</span> <span class="pre">key,</span> <span class="pre">movie)</span></code> pairs that are returned
+by the <code class="docutils literal notranslate"><span class="pre">get_movies</span></code> method to the template in sorted order (line 15).
+Since the default sorting mechanism on pairs sorts on the first element,
+the movies will be sorted in ascending order of their keys.</p>
+<p>To display the movies, we need an iteration mechanism in the movie list
+template (<a class="reference internal" href="#lst-movies-v0301"><span class="std std-numref">Listing 3.5</span></a>). The <code class="docutils literal notranslate"><span class="pre">{%</span> <span class="pre">for</span> <span class="pre">...</span> <span class="pre">%}</span></code> and
+<code class="docutils literal notranslate"><span class="pre">{%</span> <span class="pre">endfor</span> <span class="pre">%}</span></code> directives let us iterate over the elements of a collection
+and generate the markup between these directives for each element.
+In our example, this will generate a <code class="docutils literal notranslate"><span class="pre">tr</span></code> element for each movie
+in the <code class="docutils literal notranslate"><span class="pre">movies</span></code> sequence (lines 8-15).</p>
+<p>For every movie, we want to show the year in parentheses if the year is set;
+but if not, we don’t want to display empty parentheses. So we use
+an <code class="docutils literal notranslate"><span class="pre">{%</span> <span class="pre">if</span> <span class="pre">...</span> <span class="pre">%}</span></code> directive to include that markup only if the <code class="docutils literal notranslate"><span class="pre">year</span></code>
+attribute of the movie contains some data (line 12). Also, we don’t want
+to generate an empty <code class="docutils literal notranslate"><span class="pre">table</span></code> element if there are no movies in the collection
+(lines 6 and 17).</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<span id="lst-movies-v0301"></span><div class="code-block-caption"><span class="caption-number">Listing 3.5 </span><span class="caption-text">Movie list template using iteration
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">templates/movies.html</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0301</span></code>).</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
+<div class="highlight-html notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span>{% extends &quot;layout.html&quot; %}
+{% block title %}Movie list{% endblock %}
+{% block content %}
+    <span class="p">&lt;</span><span class="nt">h1</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Movies<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+
+<span class="hll">    {% if movies %}
+</span><span class="hll">    <span class="p">&lt;</span><span class="nt">table</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;table is-striped is-fullwidth&quot;</span><span class="p">&gt;</span>
+</span><span class="hll">      {% for movie_key, movie in movies %}
+</span><span class="hll">      <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
+</span><span class="hll">        <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>
+</span><span class="hll">          {{ movie.title }}
+</span><span class="hll">          {% if movie.year %} ({{ movie.year }}) {% endif %}
+</span><span class="hll">        <span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+</span><span class="hll">      <span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+</span><span class="hll">      {% endfor %}
+</span><span class="hll">    <span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+</span><span class="hll">    {% endif %}
+</span>{% endblock %}
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="parametric-routes">
+<h2>3.3. Parametric Routes<a class="headerlink" href="#parametric-routes" title="Permalink to this headline">¶</a></h2>
+<p>Next, we want to add a page that will display a movie. To identify a movie
+in the collection, we will use its key value as part of its URL. For example,
+the route <code class="docutils literal notranslate"><span class="pre">/movies/1</span></code> will refer to the movie with key <code class="docutils literal notranslate"><span class="pre">1</span></code>. The movie page
+will look like in <a class="reference internal" href="#fig-model-movie"><span class="std std-numref">Fig. 3.2</span></a>.</p>
+<div class="figure align-center" id="id8">
+<span id="fig-model-movie"></span><img alt="Screenshot of movie display page." src="_images/model_movie.png" />
+<p class="caption"><span class="caption-number">Fig. 3.2 </span><span class="caption-text">The movie display page.</span></p>
+</div>
+<p>Let’s start with the movie page template. Assuming it gets the movie object
+as a parameter named <code class="docutils literal notranslate"><span class="pre">movie</span></code>, the template code will be as in
+<a class="reference internal" href="#lst-movie-v0302"><span class="std std-numref">Listing 3.6</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<span id="lst-movie-v0302"></span><div class="code-block-caption"><span class="caption-number">Listing 3.6 </span><span class="caption-text">Movie page template
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">templates/movie.html</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0302</span></code>).</span><a class="headerlink" href="#id9" title="Permalink to this code">¶</a></div>
+<div class="highlight-html notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span>{% extends &quot;layout.html&quot; %}
+{% block title %}Movie{% endblock %}
+{% block content %}
+    <span class="p">&lt;</span><span class="nt">h1</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>Movie<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">table</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;table&quot;</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Title:<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>{{ movie.title }}<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+      {% if movie.year %}
+      <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Year:<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>{{ movie.year }}<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+      {% endif %}
+    <span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+{% endblock %}
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>The view function (<a class="reference internal" href="#lst-views-v0302"><span class="std std-numref">Listing 3.7</span></a>, lines 18-21) takes
+the movie key as a parameter and uses it to get the movie from the database
+and send it to the template.</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<span id="lst-views-v0302"></span><div class="code-block-caption"><span class="caption-number">Listing 3.7 </span><span class="caption-text">Movie page view function with movie key parameter
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">views.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0302</span></code>).</span><a class="headerlink" href="#id10" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">current_app</span><span class="p">,</span> <span class="n">render_template</span>
+
+
+<span class="k">def</span> <span class="nf">home_page</span><span class="p">():</span>
+    <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+    <span class="n">day_name</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%A&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;home.html&quot;</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="n">day_name</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">movies_page</span><span class="p">():</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;db&quot;</span><span class="p">]</span>
+    <span class="n">movies</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_movies</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;movies.html&quot;</span><span class="p">,</span> <span class="n">movies</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">movies</span><span class="p">))</span>
+
+
+<span class="hll"><span class="k">def</span> <span class="nf">movie_page</span><span class="p">(</span><span class="n">movie_key</span><span class="p">):</span>
+</span><span class="hll">    <span class="n">db</span> <span class="o">=</span> <span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;db&quot;</span><span class="p">]</span>
+</span><span class="hll">    <span class="n">movie</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get_movie</span><span class="p">(</span><span class="n">movie_key</span><span class="p">)</span>
+</span><span class="hll">    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;movie.html&quot;</span><span class="p">,</span> <span class="n">movie</span><span class="o">=</span><span class="n">movie</span><span class="p">)</span>
+</span></pre></div>
+</td></tr></table></div>
+</div>
+<p>For this to work, we have to tell Flask to send the movie key part of the route
+(e.g. the <code class="docutils literal notranslate"><span class="pre">1</span></code> in <code class="docutils literal notranslate"><span class="pre">/movies/1</span></code>) as a parameter to the handler. Also note that
+we have to make sure that the movie key is sent as an integer and
+not as a string. Flask handles such parametric routes by marking parts
+of the route in angular brackets. The added line in <a class="reference internal" href="#lst-server-v0302"><span class="std std-numref">Listing 3.8</span></a>
+states that the second part of the URL will be mapped to the <code class="docutils literal notranslate"><span class="pre">movie_key</span></code>
+parameter in the function after getting converted to an integer.</p>
+<div class="literal-block-wrapper docutils container" id="id11">
+<span id="lst-server-v0302"></span><div class="code-block-caption"><span class="caption-number">Listing 3.8 </span><span class="caption-text">URL setup with parametric route
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">server.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0302</span></code>).</span><a class="headerlink" href="#id11" title="Permalink to this code">¶</a></div>
+<div class="highlight-udiff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gd">--- /home/uyar/Projects/flask-tutorial/app/v0301/server.py</span>
+<span class="gi">+++ /home/uyar/Projects/flask-tutorial/app/v0302/server.py</span>
+<span class="gu">@@ -11,6 +11,7 @@</span>
+ 
+     app.add_url_rule(&quot;/&quot;, view_func=views.home_page)
+     app.add_url_rule(&quot;/movies&quot;, view_func=views.movies_page)
+<span class="gi">+    app.add_url_rule(&quot;/movies/&lt;int:movie_key&gt;&quot;, view_func=views.movie_page)</span>
+ 
+     db = Database()
+     db.add_movie(Movie(&quot;Slaughterhouse-Five&quot;, year=1972))
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="admonition-exercise-1 admonition">
+<p class="first admonition-title">Exercise 1</p>
+<p class="last">Organize the movie list page so that the entries are links to pages
+that will display the selected movie. <em>Hint</em>: You will need to check
+the documentation for the <code class="docutils literal notranslate"><span class="pre">url_for</span></code> function about handling
+parametric routes. (<a class="reference internal" href="solutions.html#solutions-model-links"><span class="std std-ref">Solution</span></a>)</p>
+</div>
+<div class="admonition-exercise-2 admonition">
+<p class="first admonition-title">Exercise 2</p>
+<p class="last">Organize the code so that if a movie with the given key doesn’t exist
+the application will generate an HTTP “Not Found” (404) error.
+(<a class="reference internal" href="solutions.html#solutions-model-not-found"><span class="std std-ref">Solution</span></a>)</p>
+</div>
+<table class="docutils footnote" frame="void" id="bulma" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>The screenshots after this point assume that the Bulma exercise
+in the previous chapter has been completed.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="forms.html" class="btn btn-neutral float-right" title="4. Forms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="application-structure.html" class="btn btn-neutral" title="2. Application Structure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2018, H. Turgut Uyar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

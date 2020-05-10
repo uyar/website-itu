@@ -1,0 +1,410 @@
+*****
+Forms
+*****
+
+In this chapter, we will implement the parts that will enable us to modify the
+collection. This includes the operations to add a new movie and to delete an
+existing movie. Both operations require the use of forms containing components
+such as text boxes and check boxes. The resulting pages are given in
+:ref:`screenshot_movieeditpage_forms` and
+:ref:`screenshot_movielistpage_forms`.
+
+.. _screenshot_movieeditpage_forms:
+
+.. figure:: figures/screenshot-movieeditpage-forms.png
+
+   Screenshot: Movie edit page
+
+.. _screenshot_movielistpage_forms:
+
+.. figure:: figures/screenshot-movielistpage-forms.png
+
+   Screenshot: Movie list page with delete option
+
+Text Boxes
+==========
+
+First, we will add a new page to edit the data of a movie. Add an HTML
+template named :file:`MovieEditPage.html` and modify its contents as in
+:ref:`Listing: Page template for editing a movie <listing_movieeditpage_html_initial>`.
+We are interested in the ``form`` element of the page (lines 15-32).
+
+.. _listing_movieeditpage_html_initial:
+
+:Listing: Page template for editing a movie.
+
+.. code-block:: html
+   :linenos:
+
+   <!DOCTYPE html>
+   <html xmlns:wicket="http://wicket.apache.org">
+     <head>
+       <meta charset="utf-8" />
+       <title>MovieDB - Movie Edit Form</title>
+       <link rel="stylesheet" href="style.css" />
+     </head>
+     <body>
+       <header>
+         <nav wicket:id="mainNavigation">
+           navigation links
+         </nav>
+       </header>
+
+       <form action="#" wicket:id="movie_edit">
+         <table>
+           <tr>
+             <th>Title:</th>
+             <td>
+               <input wicket:id="title" type="text" placeholder="The Matrix"
+                      required autofocus />
+             </td>
+           </tr>
+           <tr>
+             <th>Year:</th>
+             <td>
+               <input wicket:id="year" type="text" size="4" placeholder="1999" />
+             </td>
+           </tr>
+         </table>
+         <input value="Save" name="save" type="submit" />
+       </form>
+
+       <footer>
+         <div id="datetime" wicket:id="datetime">
+            Wed Sep 4 15:32:40 EEST 2013
+         </div>
+       </footer>
+     </body>
+   </html>
+
+From this template we can see that the corresponding Wicket page class has to
+contain a component with the Wicket id ``movie_edit`` which has to be able to
+handle forms (line 15). And this component has to contain two other components
+with the Wicket ids ``title`` and ``year``, both of which will be responsible
+for handling text boxes (lines 20 and 27).
+
+Let us start by creating the form component. Add a new Java class with the
+name :class:`MovieEditForm` which extends the Wicket :class:`Form` component
+(see :ref:`Listing: Movie edit form class <listing_movieeditform_java_initial>`).
+This form component will take the movie object it will edit as a parameter to
+its constructor (line 8). The movie object will serve as the model for the
+component, i.e. it will provide the data for any of the components contained in
+the page. To achieve this, we create a Wicket :class:`CompoundPropertyModel`
+object from the movie and set it as the model of this form (lines 11-12). The
+form component contains two text field subcomponents, one for each of the
+text boxes defined in the HTML template (lines 14-15).
+
+.. _listing_movieeditform_java_initial:
+
+:Listing: Movie edit form class.
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import org.apache.wicket.markup.html.form.Form;
+   import org.apache.wicket.markup.html.form.TextField;
+   import org.apache.wicket.model.CompoundPropertyModel;
+
+   public class MovieEditForm extends Form {
+       public MovieEditForm(String id, Movie movie) {
+           super(id);
+
+           CompoundPropertyModel model = new CompoundPropertyModel(movie);
+           this.setModel(model);
+
+           this.add(new TextField("title"));
+           this.add(new TextField("year"));
+       }
+
+       @Override
+       public void onSubmit() {
+           Movie movie = (Movie) this.getModelObject();
+           WicketApplication app = (WicketApplication) this.getApplication();
+           MovieCollection collection = app.getCollection();
+           collection.addMovie(movie);
+           this.setResponsePage(new MovieDisplayPage(movie));
+       }
+   }
+
+When implementing a form, another major task is to specify what will happen
+when the form is submitted. We do this by overriding the :meth:`onSubmit`
+method of the Wicket :class:`Form` class (lines 19-25). For this particular
+form, we need to add the movie object to the collection; therefore, we get the
+movie which is the model object of this form (line 20), add the movie to the
+collection (lines 21-23), and redirect the user to the page that will display
+this movie (line 24).
+
+Now we have to add this form component to the :class:`MovieEditPage` class to
+complete the connection between the template and all the Wicket components
+(see :ref:`Listing: Movie edit page class <listing_movieeditpage_java_initial>`).
+This page takes the movie to be edited as a parameter to its constructor
+(line 4) and passes it to the form component (line 5).
+
+.. _listing_movieeditpage_java_initial:
+
+:Listing: Movie edit page class.
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   public final class MovieEditPage extends BasePage {
+       public MovieEditPage(Movie movie) {
+           this.add(new MovieEditForm("movie_edit", movie));
+       }
+   }
+
+.. important::
+
+   Pay extra attention to the hierarchy between the HTML elements and the
+   Java components in this example.
+
+To make this page accessible from other pages, we add a link to the global
+navigation panel
+(:ref:`Listing: Navigation panel template with link to movie adding page <listing_navigationpanel_html_link_movieadd>`)
+and a link component to the corresponding Java class
+(:ref:`Listing: Navigation panel class constructor with link component to movie adding page <listing_navigationpanel_java_link_movieadd>`).
+When this link is clicked, we instantiate a new movie object and send it to the
+edit page as parameter (lines 18-19).
+
+.. _listing_navigationpanel_html_link_movieadd:
+
+:Listing: Navigation panel template with link to movie adding page.
+
+.. code-block:: html
+   :linenos:
+
+   <wicket:panel>
+     <ul>
+       <li><a href="#" wicket:id="home">Home</a></li>
+       <li><a href="#" wicket:id="list_movies">List movies</a></li>
+       <li><a href="#" wicket:id="add_movie">Add movie</a></li>
+     </ul>
+   </wicket:panel>
+
+.. _listing_navigationpanel_java_link_movieadd:
+
+:Listing: Navigation panel class constructor with link component to movie adding page.
+
+.. code-block:: java
+   :linenos:
+
+   public class NavigationPanel extends Panel {
+       public NavigationPanel(String id) {
+           super(id);
+
+           Link homePageLink = new Link("home") {
+               @Override
+               public void onClick() {
+                   this.setResponsePage(new HomePage());
+               }
+           };
+           this.add(homePageLink);
+
+           Link movieListPageLink = new Link("list_movies") {
+               @Override
+               public void onClick() {
+                   this.setResponsePage(new MovieListPage());
+               }
+           };
+           this.add(movieListPageLink);
+
+           Link movieAddLink = new Link("add_movie") {
+               @Override
+               public void onClick() {
+                   Movie movie = new Movie();
+                   this.setResponsePage(new MovieEditPage(movie));
+               }
+           };
+           this.add(movieAddLink);
+       }
+   }
+
+Note that, now that we can add movies to the collection, we don't need the
+sample movie data anymore and we can delete the relevant lines from the
+:meth:`init` method of the :class:`WicketApplication` class to get:
+
+.. code-block:: java
+
+   @Override
+   public void init() {
+       super.init();
+       this._collection = new MovieCollection();
+   }
+
+.. note::
+
+   You can see the changes from the previous version at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/2977f56c0cb0.
+   You can get a copy of this version by clicking on the download link on that
+   page.
+
+Check Boxes
+===========
+
+Our next step is to delete movies from the collection. We will change the
+movie list page so that there will be a check box next to every movie and a
+delete button at the bottom of the page. When the delete button is pressed all
+the checked movies will be deleted. First, we change the template for the
+movie list page as in
+:ref:`Listing: Movie list template with check boxes for entries <listing_movielistpage_html_checkboxes>`.
+
+.. _listing_movielistpage_html_checkboxes:
+
+:Listing: Movie list template with check boxes for entries.
+
+.. code-block:: html
+   :linenos:
+
+   <h2>Movie List</h2>
+
+   <form action="#" wicket:id="movie_list_form">
+     <div wicket:id="selected_movies">
+       <table>
+         <tr wicket:id="movie_list">
+           <td><input type="checkbox" wicket:id="selected" /></td>
+           <td>
+             <a href="#" wicket:id="movie_link">
+               <span wicket:id="title">The Matrix</span>
+               (<span wicket:id="year">1999</span>)
+             </a>
+           </td>
+         </tr>
+       </table>
+     </div>
+     <input type="submit" value="Delete" name="delete" />
+   </form>
+   <table>
+
+The changes from the earlier version are as follows:
+
+* There is a check box in front of every movie link (line 7). These check
+  boxes will be controlled by Wicket :class:`Check` components in the Java
+  code.
+* We will group check boxes so that we can handle them easier using a
+  :class:`CheckGroup` component in Wicket. We use the ``div`` element on
+  line 4 to establish this connection.
+* Since check boxes need to be part of a form, we put all the elements under a
+  form element (line 3).
+* There is now a button for submitting this form (line 17).
+
+The movie list view we have used so far is no longer sufficient for handling
+this template. We need a movie list form that will include the movie list
+view. The implementation is given in
+:ref:`Listing: Movie list form class <listing_movielistform_initial>`. This
+component will keep the list of selected movies in the :attr:`_selectedMovies`
+attribute (line 14), which is initialized as an empty linked list in the
+constructor (line 18). The constructor creates and adds a check box group
+component (lines 20-22) which it associates with this list. This way, all
+movies associated with the check boxes under this check group will be elements
+of the list.
+
+Until now, the movie list view used to be directly under the movie list page
+but now it has to be placed under this check group according to the hierarchy
+in the HTML template. Therefore we move the code generating the movie list
+view from the :class:`MovieListPage` class to this class (lines 24-40) and add
+the list view under the check group (line 41). This code contains a new
+statement for adding a check box to the list item (line 37). Sending the model
+of the item as a parameter to the constructor of the :class:`Check` component
+(via the :meth:`getModel` method) creates the connection between the check box
+and the check group it is in.
+
+As before, we override the :meth:`onSubmit` method to determine the action to
+take when the submit button is clicked. Since the :attr:`_selectedMovies`
+attribute keeps the list of movies selected for deletion, we iterate over its
+elements and delete them from the collection (lines 48-49). Then we redirect
+the user to the movie list page (line 50).
+
+.. _listing_movielistform_initial:
+
+:Listing: Movie list form class.
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import java.util.LinkedList;
+   import java.util.List;
+
+   import org.apache.wicket.markup.html.basic.Label;
+   import org.apache.wicket.markup.html.form.Check;
+   import org.apache.wicket.markup.html.form.CheckGroup;
+   import org.apache.wicket.markup.html.form.Form;
+   import org.apache.wicket.markup.html.list.ListItem;
+   import org.apache.wicket.markup.html.list.PropertyListView;
+
+   public class MovieListForm extends Form {
+       private List<Movie> _selectedMovies;
+
+       public MovieListForm(String id) {
+           super(id);
+           this._selectedMovies = new LinkedList<Movie>();
+
+           CheckGroup movieCheckGroup =
+                   new CheckGroup("selected_movies", this._selectedMovies);
+           this.add(movieCheckGroup);
+
+           WicketApplication app = (WicketApplication) this.getApplication();
+           MovieCollection collection = app.getCollection();
+           List<Movie> movies = collection.getMovies();
+
+           PropertyListView movieListView =
+                   new PropertyListView("movie_list", movies) {
+               @Override
+               protected void populateItem(ListItem item) {
+                   Movie movie = (Movie) item.getModelObject();
+                   MovieDisplayPageLink movieLink =
+                           new MovieDisplayPageLink("movie_link", movie);
+                   movieLink.add(new Label("title"));
+                   movieLink.add(new Label("year"));
+                   item.add(new Check("selected", item.getModel()));
+                   item.add(movieLink);
+               }
+           };
+           movieCheckGroup.add(movieListView);
+       }
+
+       @Override
+       public void onSubmit() {
+           WicketApplication app = (WicketApplication) this.getApplication();
+           MovieCollection collection = app.getCollection();
+           for (Movie movie : this._selectedMovies)
+               collection.deleteMovie(movie);
+           this.setResponsePage(new MovieListPage());
+       }
+   }
+
+The :class:`MovieListPage` class now only needs the form component, so its
+constructor will be as in
+:ref:`Listing: Movie list page class containing movie list form component <listing_movielistpage_java_listform>`.
+
+.. _listing_movielistpage_java_listform:
+
+:Listing: Movie list page class containing movie list form component.
+
+.. code-block:: java
+   :linenos:
+
+   public MovieListPage() {
+       MovieListForm movieListForm = new MovieListForm("movie_list_form");
+       this.add(movieListForm);
+   }
+
+.. note::
+
+   You can see the changes from the previous version at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/9d7f8d6bce66.
+   You can get a copy of this version by clicking on the download link on that
+   page.
+
+Exercise
+========
+
+* Add a link to the movie display page which, when clicked, will take the
+  user to the movie edit page. After saving, the movie should be updated in
+  the collection (not added a second time).
+  (:ref:`Solution <solutions_forms_1>`)

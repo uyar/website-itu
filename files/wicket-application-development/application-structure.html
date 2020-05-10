@@ -1,0 +1,460 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. Application Structure &mdash; Wicket Application Development</title>
+    
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Wicket Application Development" href="index.html" />
+    <link rel="next" title="3. Data Model" href="data-model.html" />
+    <link rel="prev" title="1. Basics" href="basics.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="data-model.html" title="3. Data Model"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="basics.html" title="1. Basics"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Wicket Application Development</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="application-structure">
+<h1>2. Application Structure<a class="headerlink" href="#application-structure" title="Permalink to this headline">¶</a></h1>
+<p>The pages in a web application share some components such as global navigation
+panels. In this chapter, we will see how to implement such components without
+repeating code. We will create a base page that will contain the components
+that all pages in the application will acquire. See
+<a class="reference internal" href="#screenshot-homepage-structure"><em>Screenshot: Home page containing navigation panel.</em></a> for the screenshot of the resulting
+home page.</p>
+<div class="figure" id="screenshot-homepage-structure">
+<img alt="_images/screenshot-homepage-structure.png" src="_images/screenshot-homepage-structure.png" />
+<p class="caption">Screenshot: Home page containing navigation panel.</p>
+</div>
+<div class="section" id="base-pages">
+<h2>2.1. Base Pages<a class="headerlink" href="#base-pages" title="Permalink to this headline">¶</a></h2>
+<p>Adding shared components to multiple pages in an application is a tedious and
+error-prone approach. Therefore, we would like to be able to specify these at
+one point and let pages get them from that single source. For instance, we
+want all our pages to use the same footer that contains the date and time but
+we do not want to add a footer component to every page separately. Instead, we
+would like to add it to a base page and extend all pages from this base page.</p>
+<p>Add a new Java class named <tt class="xref py py-class docutils literal"><span class="pre">BasePage</span></tt> to your package (<em>careful</em>: a
+Java class, not a Wicket page; there will be no template for this class). The
+code of the class is given in
+<a class="reference internal" href="#listing-basepage-java-footer"><em>Listing: Base page class with standard footer</em></a>.
+Note that, the date and time label is already contained in this page
+(lines 15-17).</p>
+<table class="docutils field-list" frame="void" id="listing-basepage-java-footer" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Base page class with standard footer.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">package</span> <span class="n">wicket</span><span class="o">.</span><span class="na">quickstart</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.wicket.markup.html.WebPage</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.wicket.markup.html.basic.Label</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.wicket.model.IModel</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">BasePage</span> <span class="kd">extends</span> <span class="n">WebPage</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">BasePage</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nf">BasePage</span><span class="o">(</span><span class="n">IModel</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">model</span><span class="o">);</span>
+        <span class="n">Date</span> <span class="n">now</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Label</span><span class="o">(</span><span class="s">&quot;datetime&quot;</span><span class="o">,</span> <span class="n">now</span><span class="o">.</span><span class="na">toString</span><span class="o">()));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>Now the <tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt> class will extend this <tt class="xref py py-class docutils literal"><span class="pre">BasePage</span></tt> instead of
+the generic <tt class="xref py py-class docutils literal"><span class="pre">WebPage</span></tt> (see
+<a class="reference internal" href="#listing-homepage-java-basepage"><em>Listing: Home page class extending the base page class</em></a>)
+and it will not contain the label component for the footer anymore.</p>
+<table class="docutils field-list" frame="void" id="listing-homepage-java-basepage" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Home page class extending the base page class.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HomePage</span> <span class="kd">extends</span> <span class="n">BasePage</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">HomePage</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Link</span> <span class="n">movieListPageLink</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Link</span><span class="o">(</span><span class="s">&quot;list_movies&quot;</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">setResponsePage</span><span class="o">(</span><span class="k">new</span> <span class="n">MovieListPage</span><span class="o">());</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">movieListPageLink</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can see the changes from the previous version at the address:
+<a class="reference external" href="https://pikacode.com/uyar/wicket-application-development/commit/46c3bd6d99f7">https://pikacode.com/uyar/wicket-application-development/commit/46c3bd6d99f7</a>.
+You can get a copy of this version by clicking on the download link on that
+page.</p>
+</div>
+</div>
+<div class="section" id="panels">
+<h2>2.2. Panels<a class="headerlink" href="#panels" title="Permalink to this headline">¶</a></h2>
+<p>Another improvement concerns the navigation. We might need links to the home
+page or the movie list page from many pages in the application. So, having a
+global navigation mechanism where all such links will be available in all
+pages might be a good idea. Wicket provides panels which let us handle
+components as a group. Add a <tt class="xref py py-class docutils literal"><span class="pre">NavigationPanel</span></tt> class and its template
+HTML file to your package with the contents given in
+<a class="reference internal" href="#listing-navigationpanel-html"><em>Listing: Navigation panel template</em></a> and
+<a class="reference internal" href="#listing-navigationpanel-java"><em>Listing: Navigation panel class</em></a>. In the
+HTML template, we are only interested in the lines 9-14, the part where we
+describe the content of the panel. The corresponding <tt class="xref py py-class docutils literal"><span class="pre">NavigationPanel</span></tt>
+class places the link components into this panel component.</p>
+<table class="docutils field-list" frame="void" id="listing-navigationpanel-html" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Navigation panel template.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">xmlns:wicket=</span><span class="s">&quot;http://wicket.apache.org&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;title&gt;</span>MovieDB<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;style.css&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;wicket:panel&gt;</span>
+      <span class="nt">&lt;ul&gt;</span>
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">wicket:id=</span><span class="s">&quot;home&quot;</span><span class="nt">&gt;</span>Home<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">wicket:id=</span><span class="s">&quot;list_movies&quot;</span><span class="nt">&gt;</span>List movies<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+      <span class="nt">&lt;/ul&gt;</span>
+    <span class="nt">&lt;/wicket:panel&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<table class="docutils field-list" frame="void" id="listing-navigationpanel-java" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Navigation panel class.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">package</span> <span class="n">wicket</span><span class="o">.</span><span class="na">quickstart</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.wicket.markup.html.link.Link</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.wicket.markup.html.panel.Panel</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">NavigationPanel</span> <span class="kd">extends</span> <span class="n">Panel</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">NavigationPanel</span><span class="o">(</span><span class="n">String</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+
+        <span class="n">Link</span> <span class="n">homePageLink</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Link</span><span class="o">(</span><span class="s">&quot;home&quot;</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">setResponsePage</span><span class="o">(</span><span class="k">new</span> <span class="n">HomePage</span><span class="o">());</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">homePageLink</span><span class="o">);</span>
+
+        <span class="n">Link</span> <span class="n">movieListPageLink</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Link</span><span class="o">(</span><span class="s">&quot;list_movies&quot;</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">()</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">setResponsePage</span><span class="o">(</span><span class="k">new</span> <span class="n">MovieListPage</span><span class="o">());</span>
+            <span class="o">}</span>
+        <span class="o">};</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">movieListPageLink</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>To make this panel available in all pages, we add it to the base page
+(see <a class="reference internal" href="#listing-basepage-java-navigationpanel"><em>Listing: Base page class constructor with navigation panel</em></a>,
+line 3).</p>
+<table class="docutils field-list" frame="void" id="listing-basepage-java-navigationpanel" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Base page class constructor with navigation panel.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span class="kd">public</span> <span class="nf">BasePage</span><span class="o">(</span><span class="n">IModel</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">(</span><span class="n">model</span><span class="o">);</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">NavigationPanel</span><span class="o">(</span><span class="s">&quot;mainNavigation&quot;</span><span class="o">));</span>
+    <span class="n">Date</span> <span class="n">now</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Label</span><span class="o">(</span><span class="s">&quot;datetime&quot;</span><span class="o">,</span> <span class="n">now</span><span class="o">.</span><span class="na">toString</span><span class="o">()));</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p id="listing-homepage-java-navigationpanel">Now the templates of our actual pages (the home page and the movie list page)
+will only add this panel instead of the links (see
+<a class="reference internal" href="#listing-homepage-html-navigationpanel"><em>Listing: Home page template with navigation panel</em></a>,
+lines 3-5). Besides, since all components on the page are now inherited from
+the base page, the constructor of the <tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt> class becomes
+completely empty
+(see <a class="reference internal" href="#listing-homepage-java-navigationpanel"><em>Listing: Home page class with navigation panel</em></a>).</p>
+<table class="docutils field-list" frame="void" id="listing-homepage-html-navigationpanel" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Home page template with navigation panel.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;header&gt;</span>
+    <span class="nt">&lt;nav</span> <span class="na">wicket:id=</span><span class="s">&quot;mainNavigation&quot;</span><span class="nt">&gt;</span>
+      navigation links
+    <span class="nt">&lt;/nav&gt;</span>
+  <span class="nt">&lt;/header&gt;</span>
+
+  <span class="nt">&lt;h1&gt;</span>MovieDB Homepage<span class="nt">&lt;/h1&gt;</span>
+
+  <span class="nt">&lt;footer&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;datetime&quot;</span> <span class="na">wicket:id=</span><span class="s">&quot;datetime&quot;</span><span class="nt">&gt;</span>
+       Wed Sep 4 15:32:40 EEST 2013
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/footer&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Home page class with navigation panel.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">package</span> <span class="n">wicket</span><span class="o">.</span><span class="na">quickstart</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HomePage</span> <span class="kd">extends</span> <span class="n">BasePage</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">HomePage</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>To display the navigation links side by side instead of as a list, let us add
+the following lines to the style sheet:</p>
+<div class="highlight-css"><div class="highlight"><pre><span class="nt">nav</span> <span class="nt">li</span> <span class="p">{</span>
+  <span class="k">display</span><span class="o">:</span> <span class="k">inline</span><span class="p">;</span>
+  <span class="k">margin-right</span><span class="o">:</span> <span class="m">1em</span><span class="p">;</span>
+  <span class="k">font-size</span><span class="o">:</span> <span class="m">80</span><span class="o">%</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can see the changes from the previous version at the address:
+<a class="reference external" href="https://pikacode.com/uyar/wicket-application-development/commit/146972c319ad">https://pikacode.com/uyar/wicket-application-development/commit/146972c319ad</a>.
+You can get a copy of this version by clicking on the download link on that
+page.</p>
+</div>
+</div>
+<div class="section" id="exercise">
+<h2>2.3. Exercise<a class="headerlink" href="#exercise" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Arrange the movie list page so that it will use the same navigation panel
+and footer. (<a class="reference internal" href="solutions.html#solutions-structure-1"><em>Solution</em></a>)</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2. Application Structure</a><ul>
+<li><a class="reference internal" href="#base-pages">2.1. Base Pages</a></li>
+<li><a class="reference internal" href="#panels">2.2. Panels</a></li>
+<li><a class="reference internal" href="#exercise">2.3. Exercise</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="basics.html"
+                        title="previous chapter">1. Basics</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="data-model.html"
+                        title="next chapter">3. Data Model</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="data-model.html" title="3. Data Model"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="basics.html" title="1. Basics"
+             >previous</a> |</li>
+        <li><a href="index.html">Wicket Application Development</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, H. Turgut Uyar.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

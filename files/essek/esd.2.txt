@@ -1,0 +1,91 @@
+
+From kgf@ehb.itu.edu.tr Sat Feb  7 22:46:37 1998
+Date: Sat, 7 Feb 1998 22:18:01 +0200 (EET)
+From: "F.Kagan Gurkaynak" <kgf@ehb.itu.edu.tr>
+Reply-To: linux-dist@linux.org.tr
+To: linux-dist@linux.org.tr
+Subject: [linux-dist] E$$EGIN SEYIR DEFTERI (II)
+
+
+Merhaba,
+
+E$$egin seyir defterine ho$geldiniz..
+
+Diyeceksiniz ki son yazdiginda seyir defteri haftalik olacak demistin, bu
+ne laubalilik.. Haklisiniz.. ama yazar e$$ek olunca olur boyle seyler. Son
+bir iki hafta icinde e$$eklerimizden biri otladigi cayirlari degistirdi,
+simdilik yeni ahirina alismaya devam ediyor..
+
+DAGITIMIN DURUMU
+****************
+
+Turkuaz kisa zamanda buyuk bir basari elde ederek bir yeni surum daha
+cikardi.. Su anda guncel surum 0.99.0. Bu esrarengiz sayilarin anlami,
+artik hazir sayiliriz, ha bitti, ha bitecek. Bu astronomik sayilarin
+herkese motivasyon vermesi dilegiyle.
+
+Yanilmiyorsam Turkuaz tum Linux camiasinda, kullanicisindan fazla surumu
+ve yansisi bulunan tek dagitim. Gururluyuz ve mutluyuz :-)
+
+Tabiri caizse dagitim bu hali ile ta$ gibi.. Ama ne olur ne olmaz biz hala
+dagitima BETA demeye devam edelim. 
+
+YAPILACAKLAR
+************
+
+Son bir iki surum icerisinde affedilmez hatalar vardi.. Bunlardan bir
+kacini bulup bize ileten herkese tesekkurler. Acgozluluk yapmayayim ama
+daha fazlasi lazim.
+
+Tonla yeni yazilim var.. deneyin.. GIMP muhtesem.. xmcd, xe, xdir, ddd,
+nedit5, rocksndiamonds son derece sevimli.. (tamam xe cok ozel bir sey
+degil ama cok cok minik) Xisp hos gozukuyor.. allah bilir calisiyordur
+da.. 
+
+Lyx baslibasina bir olay.. tek kelime ile harika :-)) 
+
+Artik detaylarla ilgilenebiliriz. Ufak tefekte olsa gordugunuz
+eksiklikleri, yorumlari vs yazin.
+
+CD'ye basma isini halletmemiz gerekiyor.
+
+Belgeleme yapilacak (ustunuze alinmayin, etrafta yeteri kadar e$$ek var)
+
+Bol bol deneme yapilmais gerekiyor, degisik, ortam donanim ve hizmetlerin
+enine boyuna denenmesi gerekiyor..
+
+YAPILMAYACAKLAR
+***************
+
+Slackware ne kadar guzeldi, PAM ne aptal sey gibi yorumlarda bulunmayalim,
+Hata bildirilerinde
+	"Calismiyor, denedim olmadi"
+gibi detayli ve anlasilir ifadeler kullanmayalim,
+
+
+NELER YAPABILIRSINIZ
+********************
+
+* Turkuaz yukleyebilirsiniz
+* Turkuaz'i yeniden yukleyebilirsiniz
+* Tum paketleri tek tek deneyebilirsiniz,
+* Yeni paketler onerebilirsiniz
+* Ontanimli gruplara ekleme cikarma gibi oneriler getirebilirsiniz  
+* Logolar konusunda isteklerde bulunabilirsiniz.. Soyle olsun, boyle olsun
+  diyebilirsiniz.. 
+* Turkuaz deneyebilirsiniz demis miydik ? 
+* Turkceleme, belgeleme, tanitim calismalarina katilabilirsiniz
+
+
+Bu kadar..
+
+E$$eginiz.. (artik memleketin cayirlarinda)
+
+
+
+-
+Turkuaz Linux Tartisma Listesi
+Uyelikten cikmak icin majordomo@linux.org.tr adresine,
+mesaj kisminda "unsubscribe linux-dist" yazan bir e-posta gonderin.
+Turkuaz ana web sayfasi - http://www.linux.org.tr/turkuaz
+linux-dist liste arsivi - http://www.linux.org.tr/cgi-bin/lwgate/linux-dist

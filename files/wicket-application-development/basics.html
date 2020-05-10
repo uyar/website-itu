@@ -1,0 +1,835 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1. Basics &mdash; Wicket Application Development</title>
+    
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Wicket Application Development" href="index.html" />
+    <link rel="next" title="2. Application Structure" href="application-structure.html" />
+    <link rel="prev" title="Wicket Application Development" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="application-structure.html" title="2. Application Structure"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Wicket Application Development"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Wicket Application Development</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="basics">
+<h1>1. Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h1>
+<p>We will first start by creating a simple home page containing only a page
+title. Then we will add the current date and time to this page to show how
+dynamic elements are handled in Wicket. Next, we will create a second page
+also containing only a page title. This second page will be populated with the
+list of movies in later chapters. Finally, we will provide a link from the
+home page to the movie list page. In the end, the home page will look like as
+shown in <a class="reference internal" href="#screenshot-homepage-basics"><em>Screenshot: Home page containing a title and a link to the movie list page.</em></a>.</p>
+<div class="figure" id="screenshot-homepage-basics">
+<img alt="_images/screenshot-homepage-basics.png" src="_images/screenshot-homepage-basics.png" />
+<p class="caption">Screenshot: Home page containing a title and a link to the movie list page.</p>
+</div>
+<div class="section" id="project-files">
+<h2>1.1. Project Files<a class="headerlink" href="#project-files" title="Permalink to this headline">¶</a></h2>
+<p>A project that uses the Wicket framework consists of source code (in Java),
+web page templates (in HTML), style sheets (in CSS) and configuration files
+(in XML). Other than the project files themselves, we also need a web server
+environment in which to execute our application. Setting up a correctly
+configured project can prove to be a difficult task, especially for a
+beginner. Therefore, we will use the following files prepared specifically for
+this tutorial.</p>
+<ol class="arabic">
+<li><p class="first"><a class="reference external" href="https://dl.dropboxusercontent.com/u/61579540/quickstart.zip">https://dl.dropboxusercontent.com/u/61579540/quickstart.zip</a></p>
+<p>This archive contains the files needed for a very basic Wicket application.
+Extract it anywhere on your computer.</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://dl.dropboxusercontent.com/u/61579540/wicket.zip">https://dl.dropboxusercontent.com/u/61579540/wicket.zip</a></p>
+<p>This archive contains the Wicket libraries on which our application code
+depends. Extract it under the folder where you extracted the
+<tt class="file docutils literal"><span class="pre">quickstart.zip</span></tt> file.</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://dl.dropboxusercontent.com/u/61579540/slf4j.zip">https://dl.dropboxusercontent.com/u/61579540/slf4j.zip</a></p>
+<p>This archive contains the logging libraries needed by Wicket. Extract it to
+the same folder as the <tt class="file docutils literal"><span class="pre">wicket.zip</span></tt> archive.</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://dl.dropboxusercontent.com/u/61579540/jetty.zip">https://dl.dropboxusercontent.com/u/61579540/jetty.zip</a></p>
+<p>This archive contains the web server which will provide us with the
+environment that can run our application. Extract it to the same folder as
+the <tt class="file docutils literal"><span class="pre">wicket.zip</span></tt> archive.</p>
+</li>
+</ol>
+<p>The resulting folder hierarchy should look like this:</p>
+<div class="highlight-python"><pre>wicket-quickstart
+|- src
+|  |- resources
+|  |- webapp
+|  |- wicket
+|- lib
+|  |- wicket-*.jar
+|  |- slf4j-*.jar
+|  |- jetty-*.jar</pre>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you are using Eclipse, you can import the project from the
+<tt class="file docutils literal"><span class="pre">wicket-quickstart</span></tt> directory.</p>
+</div>
+<p>Most of the files that we are going to work on are in the <tt class="file docutils literal"><span class="pre">src</span></tt> folder.
+Since the Java classes in the quickstart archive are in the Java package
+<tt class="xref py py-mod docutils literal"><span class="pre">wicket.quickstart</span></tt> package, they are kept in the
+<tt class="file docutils literal"><span class="pre">src/wicket/quickstart</span></tt> folder. The HTML web page templates are also in
+that folder. Static files like style sheets and logos are placed into the
+<tt class="file docutils literal"><span class="pre">src/webapp</span></tt> folder. Finally, configuration files reside in the
+<tt class="file docutils literal"><span class="pre">src/webapp/WEB-INF</span></tt> folder.</p>
+<p>The starting point for a Wicket application is the application class. In our
+example, this is the <tt class="xref py py-class docutils literal"><span class="pre">WicketApplication</span></tt> class. Change the contents
+of the file <tt class="file docutils literal"><span class="pre">src/wicket/quickstart/WicketApplication.java</span></tt> as given in
+<a class="reference internal" href="#listing-application-initial"><em>Listing: Initial application class</em></a>. Note
+that, this class extends the <tt class="xref py py-class docutils literal"><span class="pre">WebApplication</span></tt> class from the Wicket
+framework (line 6) and defines a <tt class="xref py py-meth docutils literal"><span class="pre">getHomePage()</span></tt> method (line 8) for
+specifying what the initial page of the application will be. In our example,
+the initial page will be an instance of the <tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt> class (line 9).</p>
+<table class="docutils field-list" frame="void" id="listing-application-initial" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Initial application class.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">package</span> <span class="n">wicket</span><span class="o">.</span><span class="na">quickstart</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.wicket.markup.html.WebPage</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.wicket.protocol.http.WebApplication</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">WicketApplication</span> <span class="kd">extends</span> <span class="n">WebApplication</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Class</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">WebPage</span><span class="o">&gt;</span> <span class="n">getHomePage</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">HomePage</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">init</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>Any extra initialization for the application should be handled in the
+<tt class="xref py py-meth docutils literal"><span class="pre">init()</span></tt> method of the application class (lines 13-15). For now, we don&#8217;t
+have anything to do at this step.</p>
+<p>In Wicket, we have to write two files for every page in the application: one
+is an HTML file that contains the template of the page, and the other is a
+Java source file containing the components that control the dynamic elements
+in the template. The name of the class (and therefore the base name of the
+Java source file) has to be the same as the base name of the HTML template
+file, as in <tt class="file docutils literal"><span class="pre">SearchPage.java</span></tt> and <tt class="file docutils literal"><span class="pre">SearchPage.html</span></tt>. Since our
+application class refers to a <tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt> class as the initial page for
+the application, we need to implement that class. Change the contents of the
+files <tt class="file docutils literal"><span class="pre">src/wicket/application/HomePage.html</span></tt> and
+<tt class="file docutils literal"><span class="pre">src/wicket/application/HomePage.java</span></tt> as given in
+<a class="reference internal" href="#listing-homepage-html-initial"><em>Listing: Initial home page template</em></a> and
+<a class="reference internal" href="#listing-homepage-java-initial"><em>Listing: Initial home page class</em></a>.
+Page classes extend the <tt class="xref py py-class docutils literal"><span class="pre">WebPage</span></tt> class of the Wicket framework and
+establish the relations with the HTML template in their constructors. Since
+there is no dynamic element in the home page template at the moment, there is
+also nothing to do in the constructor of the <tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt> class
+(lines 6-7).</p>
+<table class="docutils field-list" frame="void" id="listing-homepage-html-initial" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Initial home page template.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">xmlns:wicket=</span><span class="s">&quot;http://wicket.apache.org&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;title&gt;</span>MovieDB - Home<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;style.css&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>MovieDB Homepage<span class="nt">&lt;/h1&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<table class="docutils field-list" frame="void" id="listing-homepage-java-initial" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Initial home page class.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">package</span> <span class="n">wicket</span><span class="o">.</span><span class="na">quickstart</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.wicket.markup.html.WebPage</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HomePage</span> <span class="kd">extends</span> <span class="n">WebPage</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">HomePage</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>Let us also apply a style sheet to our page. Change the contents of the file
+<tt class="file docutils literal"><span class="pre">src/webapp/style.css</span></tt> as given in
+<a class="reference internal" href="#listing-stylesheet-initial"><em>Listing: Initial style sheet</em></a>.</p>
+<table class="docutils field-list" frame="void" id="listing-stylesheet-initial" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Initial style sheet.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-css"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span class="nt">body</span> <span class="p">{</span>
+  <span class="k">background-color</span><span class="o">:</span> <span class="nb">white</span><span class="p">;</span>
+  <span class="k">color</span><span class="o">:</span> <span class="m">#6F6F6F</span><span class="p">;</span>
+  <span class="k">font-family</span><span class="o">:</span> <span class="s1">&#39;Droid Sans&#39;</span><span class="o">,</span> <span class="s1">&#39;Helvetica&#39;</span><span class="o">,</span> <span class="s1">&#39;sans&#39;</span><span class="p">;</span>
+  <span class="k">font-size</span><span class="o">:</span> <span class="m">12pt</span><span class="p">;</span>
+  <span class="k">margin</span><span class="o">:</span> <span class="m">2ex</span> <span class="m">2em</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">h1</span><span class="o">,</span> <span class="nt">h2</span><span class="o">,</span> <span class="nt">h3</span><span class="o">,</span> <span class="nt">h4</span> <span class="p">{</span>
+  <span class="k">color</span><span class="o">:</span> <span class="m">#E9601A</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">a</span> <span class="p">{</span>
+  <span class="k">color</span><span class="o">:</span> <span class="m">#6F6F6F</span><span class="p">;</span>
+  <span class="k">text-decoration</span><span class="o">:</span> <span class="k">underline</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>The last issue to discuss is how to run the application. The application can
+be deployed to various runtime environments, but for the sake of simplicity,
+we are going to run the <tt class="file docutils literal"><span class="pre">src/wicket/quickstart/Start.java</span></tt> file as a
+regular Java application. This file is not directly a part of the project, so
+we will not go over its source code. When you run the application, you should
+see the following message in the console:</p>
+<div class="highlight-python"><pre>[main] INFO org.eclipse.jetty.server.AbstractConnector - Started SocketConnector@0.0.0.0:8081</pre>
+</div>
+<p>In your browser, visit the address <a class="reference external" href="http://localhost:8081/">http://localhost:8081/</a> and you should see
+the text &#8220;MovieDB Homepage&#8221;. You can stop the application by pressing the
+<tt class="kbd docutils literal"><span class="pre">Enter</span></tt> key in the console.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can see this initial version of the project at the address:
+<a class="reference external" href="https://pikacode.com/uyar/wicket-application-development/files/a91f1ccf55cd">https://pikacode.com/uyar/wicket-application-development/files/a91f1ccf55cd</a>.
+You can get a copy of this version by clicking on the download link on that
+page.</p>
+</div>
+</div>
+<div class="section" id="dynamic-content">
+<h2>1.2. Dynamic Content<a class="headerlink" href="#dynamic-content" title="Permalink to this headline">¶</a></h2>
+<p>Let us add the current date and time to the home page. We first change the
+<tt class="file docutils literal"><span class="pre">HomePage.html</span></tt> file as in
+<a class="reference internal" href="#listing-homepage-html-datetime"><em>Listing: Home page template showing the current date and time</em></a>.
+Note that, the difference is the added a footer section (lines 11-15).</p>
+<table class="docutils field-list" frame="void" id="listing-homepage-html-datetime" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Home page template showing the current date and time.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">xmlns:wicket=</span><span class="s">&quot;http://wicket.apache.org&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;title&gt;</span>MovieDB - Home<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;style.css&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>MovieDB Homepage<span class="nt">&lt;/h1&gt;</span>
+
+    <span class="nt">&lt;footer&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;datetime&quot;</span> <span class="na">wicket:id=</span><span class="s">&quot;datetime&quot;</span><span class="nt">&gt;</span>
+         Wed Sep 4 15:32:40 EEST 2013
+      <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/footer&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>The lines 12-14 contain the markup that will display the date and time. The
+<tt class="xref py py-attr docutils literal"><span class="pre">wicket:id</span></tt> attribute indicates that the contents of this <tt class="docutils literal"><span class="pre">div</span></tt>
+element are dynamic. Therefore, the date and time on line 13 is just a
+placeholder to be replaced by the data provided by a Wicket component at
+runtime.</p>
+<p>For every dynamic element in the template, there has to be a corresponding
+component in the Java class
+(see <a class="reference internal" href="#listing-homepage-java-datetime"><em>Listing: Home page class providing the current date and time</em></a>).
+The template element and the component are matched using their Wicket id
+attributes. In our example, this means that the <tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt> class must
+contain a Wicket component with the Wicket id <tt class="xref py py-attr docutils literal"><span class="pre">datetime</span></tt>. We have to
+choose a suitable Wicket component that can supply the requested data. In this
+case, since the data is a simple string, we can use the Wicket <tt class="xref py py-class docutils literal"><span class="pre">Label</span></tt>
+component. Line 11 shows how to instantiate a label: the first parameter is
+the Wicket id, and the second parameter is the string content of the label.
+When this component is added to the page (line 12), the connection between the
+template element and the label component will be established.</p>
+<table class="docutils field-list" frame="void" id="listing-homepage-java-datetime" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Home page class providing the current date and time.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">package</span> <span class="n">wicket</span><span class="o">.</span><span class="na">quickstart</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.wicket.markup.html.WebPage</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.wicket.markup.html.basic.Label</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HomePage</span> <span class="kd">extends</span> <span class="n">WebPage</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">HomePage</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Date</span> <span class="n">now</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+        <span class="n">Label</span> <span class="n">dateTimeLabel</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Label</span><span class="o">(</span><span class="s">&quot;datetime&quot;</span><span class="o">,</span> <span class="n">now</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">dateTimeLabel</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>Finally, we would like control how the date and time will be displayed, so we
+add the lines given in
+<a class="reference internal" href="#listing-stylesheet-datetime"><em>Listing: Stylesheet for date and time</em></a>
+to the <tt class="file docutils literal"><span class="pre">style.css</span></tt> file.</p>
+<table class="docutils field-list" frame="void" id="listing-stylesheet-datetime" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Style rules for date and time.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-css"><div class="highlight"><pre><span class="nt">div</span><span class="nf">#datetime</span> <span class="p">{</span>
+  <span class="k">font-size</span><span class="o">:</span> <span class="m">80</span><span class="o">%</span><span class="p">;</span>
+  <span class="k">text-align</span><span class="o">:</span> <span class="k">right</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The application, as implemented so far, will run as follows:</p>
+<ul class="simple">
+<li>A <tt class="xref py py-class docutils literal"><span class="pre">WicketApplication</span></tt> object will be instantiated. This object will
+set the <tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt> class as the entry page of the application.</li>
+<li>A <tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt> object will be instantiated. This, in turn, will
+instantiate a <tt class="xref py py-class docutils literal"><span class="pre">Label</span></tt> object with the Wicket id <tt class="xref py py-attr docutils literal"><span class="pre">datetime</span></tt> and
+set the current date and time as its contents. This label will be added to
+the page.</li>
+<li>The <tt class="file docutils literal"><span class="pre">HomePage.html</span></tt> template will be used to display the page. All
+elements without a Wicket id will be displayed as they are. The contents of
+the <tt class="docutils literal"><span class="pre">div</span></tt> element with the Wicket id <tt class="docutils literal"><span class="pre">datetime</span></tt> will be replaced by the
+content of the label component with the same id in the <tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt>
+object.</li>
+</ul>
+<p>Adding a component to another component creates a hierarchy between the two.
+For example, when we added the label component to the page component, it made
+the label a subcomponent of the page. The HTML template also has a hierarchy
+due to the nesting of the HTML tags. Wicket matches the hierarchy of the HTML
+template to the hierarchy of the Java components. For example, consider the
+template below where a <tt class="docutils literal"><span class="pre">span</span></tt> element is nested inside a <tt class="docutils literal"><span class="pre">div</span></tt> element:</p>
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">wicket:id=</span><span class="s">&quot;x&quot;</span><span class="nt">&gt;</span>
+    some text
+    <span class="nt">&lt;span</span> <span class="na">wicket:id=</span><span class="s">&quot;y&quot;</span><span class="nt">&gt;</span>some other text<span class="nt">&lt;/span&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</pre></div>
+</div>
+<p>The corresponding Java page component could contain code like given below.
+Note that the <tt class="docutils literal"><span class="pre">componentX</span></tt> (Wicket id <tt class="docutils literal"><span class="pre">x</span></tt>) is added to <tt class="docutils literal"><span class="pre">this</span></tt> (the page
+component), whereas <tt class="docutils literal"><span class="pre">componentY</span></tt> (Wicket id <tt class="docutils literal"><span class="pre">y</span></tt>) is added to
+<tt class="docutils literal"><span class="pre">componentX</span></tt>:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">SomeComponent</span> <span class="n">componentX</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SomeComponent</span><span class="o">(</span><span class="s">&quot;x&quot;</span><span class="o">);</span>
+<span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">componentX</span><span class="o">);</span>
+<span class="n">SomeOtherComponent</span> <span class="n">componentY</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SomeOtherComponent</span><span class="o">(</span><span class="s">&quot;y&quot;</span><span class="o">);</span>
+<span class="n">componentX</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">componentY</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>The parent component of any component can be retrieved using its
+<tt class="xref py py-meth docutils literal"><span class="pre">getParent()</span></tt> method. Continuing with the example above, the following
+code will assign <tt class="docutils literal"><span class="pre">componentX</span></tt> to <tt class="docutils literal"><span class="pre">parent</span></tt>:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">SomeComponent</span> <span class="n">parent</span> <span class="o">=</span> <span class="o">(</span><span class="n">SomeComponent</span><span class="o">)</span> <span class="n">componentY</span><span class="o">.</span><span class="na">getParent</span><span class="o">();</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can see the changes from the previous version at the address:
+<a class="reference external" href="https://pikacode.com/uyar/wicket-application-development/commit/05a5a934c6ae">https://pikacode.com/uyar/wicket-application-development/commit/05a5a934c6ae</a>.
+You can get a copy of this version by clicking on the download link on that
+page.</p>
+</div>
+</div>
+<div class="section" id="adding-links">
+<h2>1.3. Adding Links<a class="headerlink" href="#adding-links" title="Permalink to this headline">¶</a></h2>
+<p>Now we want to create a second page which will be responsible for listing the
+movies in the collection. At first, the page will only contain some static
+text, it will be populated in later chapters. Create an HTML file with the
+name <tt class="file docutils literal"><span class="pre">MovieListPage.html</span></tt>, and a Java file with the name
+<tt class="file docutils literal"><span class="pre">MovieListPage.java</span></tt>. Arrange the HTML file as given in
+<a class="reference internal" href="#listing-movielistpage-html-initial"><em>Listing: Initial movie list page template</em></a>.
+Again, since there is no dynamic element in this template, the constructor of
+the <tt class="xref py py-class docutils literal"><span class="pre">MovieListPage</span></tt> class is empty
+(see <a class="reference internal" href="#listing-movielistpage-java-initial"><em>Listing: Initial movie list page class</em></a>).</p>
+<table class="docutils field-list" frame="void" id="listing-movielistpage-html-initial" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Initial movie list page template.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">xmlns:wicket=</span><span class="s">&quot;http://wicket.apache.org&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;title&gt;</span>MovieDB - Movie List<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;style.css&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h2&gt;</span>Movie List<span class="nt">&lt;/h2&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<table class="docutils field-list" frame="void" id="listing-movielistpage-java-initial" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Initial movie list page class.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">package</span> <span class="n">wicket</span><span class="o">.</span><span class="na">quickstart</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.wicket.markup.html.WebPage</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MovieListPage</span> <span class="kd">extends</span> <span class="n">WebPage</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">MovieListPage</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>Our next step will be to provide a link from the home page to the movie list
+page. In order to achieve this, we modify the <tt class="file docutils literal"><span class="pre">HomePage.html</span></tt> as in
+<a class="reference internal" href="#listing-homepage-html-link-movielistpage"><em>Listing: Home page template with link to movie list page</em></a>.
+The code for adding the link is on line 12. This line states that the
+necessary information for the <tt class="docutils literal"><span class="pre">a</span></tt> element will be supplied by a component
+with the Wicket id <tt class="xref py py-attr docutils literal"><span class="pre">list_movies</span></tt> in the <tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt> class. As
+before, the <tt class="xref py py-attr docutils literal"><span class="pre">href</span></tt> attribute of the <tt class="docutils literal"><span class="pre">a</span></tt> element is just a placeholder
+and will be replaced by the value supplied by the Wicket component.</p>
+<table class="docutils field-list" frame="void" id="listing-homepage-html-link-movielistpage" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Home page template with link to movie list page.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-html"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">xmlns:wicket=</span><span class="s">&quot;http://wicket.apache.org&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;title&gt;</span>MovieDB - Home<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;style.css&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>MovieDB Homepage<span class="nt">&lt;/h1&gt;</span>
+
+    <span class="nt">&lt;ul&gt;</span>
+      <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">wicket:id=</span><span class="s">&quot;list_movies&quot;</span><span class="nt">&gt;</span>List movies<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;/ul&gt;</span>
+
+    <span class="nt">&lt;footer&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;datetime&quot;</span> <span class="na">wicket:id=</span><span class="s">&quot;datetime&quot;</span><span class="nt">&gt;</span>
+         Wed Sep 4 15:32:40 EEST 2013
+      <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/footer&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>The Wicket framework provides an abstract <tt class="xref py py-class docutils literal"><span class="pre">Link</span></tt> class which can be
+extended to create a new link class. For the new class, we have to implement a
+constructor and override the <tt class="xref py py-meth docutils literal"><span class="pre">onClick()</span></tt> method that specifies what will
+happen when the link is clicked. Create a Java file named
+<tt class="file docutils literal"><span class="pre">MovieListPageLink.java</span></tt> and arrange it as in
+<a class="reference internal" href="#listing-movielistpagelink"><em>Listing: Movie list page link class</em></a>. Note
+that, since this is not a Wicket page, there is no template associated with
+it.</p>
+<p>Constructor methods of Wicket component classes take an id value as their
+first parameter (their Wicket id). Since there is nothing special to do, the
+constructor will just invoke the constructor of its superclass with the same
+parameter (line 7). The <tt class="xref py py-meth docutils literal"><span class="pre">onClick()</span></tt> method creates a new instance of a
+movie list page (line 12) and calls the <tt class="xref py py-meth docutils literal"><span class="pre">setResponsePage()</span></tt> method to
+direct the user to this newly created page (line 13).</p>
+<table class="docutils field-list" frame="void" id="listing-movielistpagelink" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Movie list page link class.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">package</span> <span class="n">wicket</span><span class="o">.</span><span class="na">quickstart</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.wicket.markup.html.link.Link</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MovieListPageLink</span> <span class="kd">extends</span> <span class="n">Link</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">MovieListPageLink</span><span class="o">(</span><span class="n">String</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">MovieListPage</span> <span class="n">targetPage</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MovieListPage</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setResponsePage</span><span class="o">(</span><span class="n">targetPage</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>The final step is to add an instance of this link to the constructor of the
+<tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt> class (lines 2-3 in
+<a class="reference internal" href="#listing-homepage-java-link-movielistpage"><em>Listing: Home page class constructor with link component to movie list page</em></a>):</p>
+<table class="docutils field-list" frame="void" id="listing-homepage-java-link-movielistpage" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Home page class constructor with link component to movie list page.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span class="kd">public</span> <span class="nf">HomePage</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">MovieListPageLink</span> <span class="n">movieListPageLink</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MovieListPageLink</span><span class="o">(</span><span class="s">&quot;list_movies&quot;</span><span class="o">);</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">movieListPageLink</span><span class="o">);</span>
+
+    <span class="n">Date</span> <span class="n">now</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+    <span class="n">Label</span> <span class="n">dateTimeLabel</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Label</span><span class="o">(</span><span class="s">&quot;datetime&quot;</span><span class="o">,</span> <span class="n">now</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">dateTimeLabel</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can see the changes from the previous version at the address:
+<a class="reference external" href="https://pikacode.com/uyar/wicket-application-development/commit/10a4f316e0b3">https://pikacode.com/uyar/wicket-application-development/commit/10a4f316e0b3</a>.
+You can get a copy of this version by clicking on the download link on that
+page.</p>
+</div>
+</div>
+<div class="section" id="shorter-code">
+<h2>1.4. Shorter Code<a class="headerlink" href="#shorter-code" title="Permalink to this headline">¶</a></h2>
+<p>There are a few things we can do to make the code shorter and more readable.
+First of all, we do not have to assign the result of every intermediate step
+to a variable. For example, when adding the date and time to the home page, we
+can skip the assignment of the label to a variable and send the label directly
+as parameter to the <tt class="xref py py-meth docutils literal"><span class="pre">add()</span></tt> method. That means, we can change the
+lines 5-7 of the <tt class="xref py py-class docutils literal"><span class="pre">HomePage</span></tt> class constructor in
+<a class="reference internal" href="#listing-homepage-java-link-movielistpage"><em>Listing: Home page class constructor with link component to movie list
+page</em></a> to:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Date</span> <span class="n">now</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+<span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Label</span><span class="o">(</span><span class="s">&quot;datetime&quot;</span><span class="o">,</span> <span class="n">now</span><span class="o">.</span><span class="na">toString</span><span class="o">()));</span>
+</pre></div>
+</div>
+<p>Similarly, we can change the <tt class="xref py py-meth docutils literal"><span class="pre">onClick()</span></tt> method of the
+<tt class="xref py py-class docutils literal"><span class="pre">MovieListPageLink</span></tt> class to:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">setResponsePage</span><span class="o">(</span><span class="k">new</span> <span class="n">MovieListPage</span><span class="o">());</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>When the project gets larger, it becomes impractical to create Java files for
+every custom Wicket component we need. For example, we have to extend the
+<tt class="xref py py-class docutils literal"><span class="pre">Link</span></tt> class to create a link component for every link with a different
+target. Instead, we can use anonymous classes to reduce the number of files in
+our project and make it easier to manage. In
+<a class="reference internal" href="#listing-homepage-java-shorthand"><em>Listing: Home page class constructor using shorter code</em></a>,
+we extend the Wicket <tt class="xref py py-class docutils literal"><span class="pre">Link</span></tt> class where we instantiate a link to the
+movie list page (lines 2-7) and therefore we do not need a
+<tt class="xref py py-class docutils literal"><span class="pre">MovieListPageLink</span></tt> class anymore.</p>
+<table class="docutils field-list" frame="void" id="listing-homepage-java-shorthand" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Listing:</th><td class="field-body">Home page class constructor using shorter code.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span class="kd">public</span> <span class="nf">HomePage</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">Link</span> <span class="n">movieListPageLink</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Link</span><span class="o">(</span><span class="s">&quot;list_movies&quot;</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">setResponsePage</span><span class="o">(</span><span class="k">new</span> <span class="n">MovieListPage</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">};</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">movieListPageLink</span><span class="o">);</span>
+
+    <span class="n">Date</span> <span class="n">now</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Label</span><span class="o">(</span><span class="s">&quot;datetime&quot;</span><span class="o">,</span> <span class="n">now</span><span class="o">.</span><span class="na">toString</span><span class="o">()));</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can see the changes from the previous version at the address:
+<a class="reference external" href="https://pikacode.com/uyar/wicket-application-development/commit/569ed45fc7b3">https://pikacode.com/uyar/wicket-application-development/commit/569ed45fc7b3</a>.
+You can get a copy of this version by clicking on the download link on that
+page.</p>
+</div>
+</div>
+<div class="section" id="exercise">
+<h2>1.5. Exercise<a class="headerlink" href="#exercise" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Add a link from the movie list page to the home page.
+(<a class="reference internal" href="solutions.html#solutions-basics-1"><em>Solution</em></a>)</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">1. Basics</a><ul>
+<li><a class="reference internal" href="#project-files">1.1. Project Files</a></li>
+<li><a class="reference internal" href="#dynamic-content">1.2. Dynamic Content</a></li>
+<li><a class="reference internal" href="#adding-links">1.3. Adding Links</a></li>
+<li><a class="reference internal" href="#shorter-code">1.4. Shorter Code</a></li>
+<li><a class="reference internal" href="#exercise">1.5. Exercise</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Wicket Application Development</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="application-structure.html"
+                        title="next chapter">2. Application Structure</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="application-structure.html" title="2. Application Structure"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Wicket Application Development"
+             >previous</a> |</li>
+        <li><a href="index.html">Wicket Application Development</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, H. Turgut Uyar.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,367 @@
+**********
+Data Model
+**********
+
+In this chapter, we will create the Java classes in our data model, that is,
+the classes for movies and movie collections. First we will implement the
+movie class and fill the movie list page with some in-place generated test
+data. Then we will implement the movie collection class which will hold some
+application-wide test data. The resulting movie list page will look like in
+:ref:`screenshot_movielistpage_model`.
+
+.. _screenshot_movielistpage_model:
+
+.. figure:: figures/screenshot-movielistpage-model.png
+
+   Screenshot: Movie list page populated with test data
+
+Movies
+======
+
+To represent movies in the application, we implement a :class:`Movie` class
+(see :ref:`Listing: Movie class <listing_movie_initial>`. At first, it only
+has a title and a year, along with their getters and setters. Apart from the
+default constructor without any parameters, there is one more constructor
+which takes the movie title as parameter:
+
+.. _listing_movie_initial:
+
+:Listing: Movie class.
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   public class Movie {
+       private String _title = null;
+       private Integer _year = null;
+
+       public Movie() {
+       }
+
+       public Movie(String title) {
+           this.setTitle(title);
+       }
+
+       public void setTitle(String title) {
+           this._title = title;
+       }
+
+       public String getTitle() {
+           return this._title;
+       }
+
+       public void setYear(Integer year) {
+           this._year = year;
+       }
+
+       public Integer getYear() {
+           return this._year;
+       }
+   }
+
+Displaying Lists
+================
+
+To display a list of movies, we have to connect an element in the HTML
+template to a Wicket :class:`ListView` component. These components are
+associated with Java lists and every element in the Java list is associated
+with a :class:`ListItem` component in the list view. If the Wicket id in the
+template matches a list view component, the underlying markup will be
+generated for each element in the list. We change the code for the
+:file:`MovieListPage.html` template as given in
+:ref:`Listing: Movie list template using a list view <listing_movielistpage_html_listview>`.
+This code will generate a ``tr`` element for each movie in the list
+(lines 11-16). Again, note that, "The Matrix" and "1999" are just
+placeholders, they will be replaced when the page is actually rendered.
+
+.. _listing_movielistpage_html_listview:
+
+:Listing: Movie list template using a list view.
+
+.. code-block:: html
+   :linenos:
+
+   <body>
+     <header>
+       <nav wicket:id="mainNavigation">
+         navigation links
+       </nav>
+     </header>
+
+     <h2>Movie List</h2>
+
+     <table>
+       <tr wicket:id="movie_list">
+         <td>
+           <span wicket:id="title">The Matrix</span>
+           (<span wicket:id="year">1999</span>)
+         </td>
+       </tr>
+     </table>
+
+     <footer>
+       <div id="datetime" wicket:id="datetime">
+          Wed Sep 4 15:32:40 EEST 2013
+       </div>
+     </footer>
+   </body>
+
+:class:`ListView` is an abstract class that has to be extended in order to be
+used (see
+:ref:`Listing: Movie list page class with sample movie data <listing_movielistpage_java_sampledata>`).
+By passing the movies list as the second parameter to the
+constructor (line 20), we associate it with this list view component and every
+item (movie) in the list will be associated with the corresponding list item
+component in this list view. Since we don't have a data source to supply us
+with the movie information at the moment, we generate a sample list
+(lines 12-18).
+
+.. _listing_movielistpage_java_sampledata:
+
+:Listing: Movie list page class with sample movie data.
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import java.util.LinkedList;
+   import java.util.List;
+
+   import org.apache.wicket.markup.html.basic.Label;
+   import org.apache.wicket.markup.html.list.ListItem;
+   import org.apache.wicket.markup.html.list.ListView;
+
+   public class MovieListPage extends BasePage {
+       public MovieListPage() {
+           List<Movie> movies = new LinkedList<Movie>();
+           Movie movie1 = new Movie("The Shining");
+           movie1.setYear(1980);
+           movies.add(movie1);
+           Movie movie2 = new Movie("Barton Fink");
+           movie2.setYear(1991);
+           movies.add(movie2);
+
+           ListView movieListView = new ListView("movie_list", movies) {
+               @Override
+               protected void populateItem(ListItem item) {
+                   Movie movie = (Movie) item.getModelObject();
+                   item.add(new Label("title", movie.getTitle()));
+                   item.add(new Label("year", movie.getYear().toString()));
+               }
+           };
+           this.add(movieListView);
+       }
+   }
+
+When extending the :class:`ListView` class, we have to implement the
+:meth:`populateItem` method which will be executed for every item in the
+list view (lines 22-26). The current list item will be passed as the ``item``
+parameter, and we can get the Java object associated with this item using its
+:meth:`getModelObject` method. That means, the ``item.getModelObject()`` call
+on line 23 will give us the reference of the associated movie object. Then we
+use Wicket :class:`Label` components to display the title and year of the
+movie on the web page (lines 24-25).
+
+Wicket also supports a simpler way of creating custom list views. If your code
+conforms to a few basic conventions, Wicket can automatically map the model
+object (in our case, the movie) to the component (the list view item). The
+rule is that the model object has to define getters and setters for each of
+its attributes using standard method names:
+
+* The name of the getter method for an attribute has to start with ``get``,
+  followed by the name of the attribute with its first letter capitalized. For
+  instance, if the name of the attribute is :attr:`title`, the name of the
+  getter has to be :meth:`getTitle`. This method should take no parameters
+  and return the value of the attribute in a proper format.
+
+* The name of the setter method for an attribute has to start with ``set``,
+  followed by the name of the attribute with its first letter capitalized.
+  Again, if the name of the attribute is :attr:`title`, the name of the setter
+  has to be :meth:`setTitle`. This method should take the value to be assigned
+  to the attribute as its only parameter and return nothing.
+
+* Getters for boolean attributes have to be named starting with ``is`` instead
+  of ``get``. For instance, if the attribute is a boolean named
+  :attr:`successful`, the name of the getter has to be :meth:`isSuccessful`.
+
+Since our :class:`Movie` class already conforms to these rules, we just have
+to extend the :class:`PropertyListView` class instead of the :class:`ListView`
+class to use this feature. Note that, in this code, we do not supply the
+contents for the title and year labels (lines 5-6). Wicket will call the
+:meth:`getTitle` method for the Wicket id ``title`` and the :meth:`getYear`
+method for the id ``year``. Also, the conversion from integer to string for
+years is handled automatically (no :meth:`toString` on line 6).
+
+.. code-block:: java
+   :linenos:
+
+   PropertyListView movieListView =
+           new PropertyListView("movie_list", movies) {
+               @Override
+               protected void populateItem(ListItem item) {
+                   item.add(new Label("title"));
+                   item.add(new Label("year"));
+               }
+           };
+
+.. note::
+
+   You can see the changes from the previous version at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/b411e0590d20.
+   You can get a copy of this version by clicking on the download link on that
+   page.
+
+Movie Collections
+=================
+
+Next, we will implement a class that will represent a movie collection. This
+class will contain a list of movie objects and some methods to interact with
+that list such as adding or deleting movies and getting a list of all movies
+(see :ref:`Listing: Movie collection class <listing_moviecollection_initial>`).
+
+.. _listing_moviecollection_initial:
+
+:Listing: Movie collection class.
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import java.util.LinkedList;
+   import java.util.List;
+
+   public class MovieCollection {
+       private List<Movie> _movies;
+
+       public MovieCollection() {
+           this._movies = new LinkedList<Movie>();
+       }
+
+       public List<Movie> getMovies() {
+           return this._movies;
+       }
+
+       public void addMovie(Movie movie) {
+           this._movies.add(movie);
+       }
+
+       public void deleteMovie(Movie movie) {
+           this._movies.remove(movie);
+       }
+   }
+
+In our earlier example, the list of movies was generated by the page that
+lists the movies. This is obviously not the proper place to generate the
+collection because there should be one movie collection object which is
+accessible to all components in the application. Therefore, the better place
+to generate that list would be in the :class:`WicketApplication` class (see
+:ref:`Listing: Application class containing the collection object <listing_application_collection>`).
+So, we add a collection object member to this class (line 7), instantiate it
+at initialization (line 18), and add a :meth:`getCollection` method which will
+return this collection (lines 27-29). Again, we provide some sample data
+(lines 19-24) in order to test our application.
+
+.. _listing_application_collection:
+
+:Listing: Application class containing the collection object
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import org.apache.wicket.markup.html.WebPage;
+   import org.apache.wicket.protocol.http.WebApplication;
+
+   public class WicketApplication extends WebApplication {
+       private MovieCollection _collection;
+
+       @Override
+       public Class<? extends WebPage> getHomePage() {
+           return HomePage.class;
+       }
+
+       @Override
+       public void init() {
+           super.init();
+
+           this._collection = new MovieCollection();
+           Movie movie1 = new Movie("The Shining");
+           movie1.setYear(1980);
+           this._collection.addMovie(movie1);
+           Movie movie2 = new Movie("Barton Fink");
+           movie2.setYear(1991);
+           this._collection.addMovie(movie2);
+       }
+
+       public MovieCollection getCollection() {
+           return this._collection;
+       }
+   }
+
+Now that the :class:`MovieListPage` class does not generate the list of movies,
+it has to retrieve them from the application. So the lines 12-18 in
+:ref:`Listing: Movie list page class with sample movie data <listing_movielistpage_java_sampledata>`
+will be replaced by the lines 2-4 in
+:ref:`Listing: Movie list page class constructor getting movie list from application <listing_movielistpage_java_movielist_from_application>`.
+We can use the :meth:`getApplication` method of Wicket web page classes to get
+a handle of the application object that contains this web page (note that this
+is a Wicket application object that we have to cast to our
+:class:`WicketApplication` class as on line 2).
+
+.. _listing_movielistpage_java_movielist_from_application:
+
+:Listing: Movie list page class constructor getting movie list from application.
+
+.. code-block:: java
+   :linenos:
+
+   public MovieListPage() {
+       WicketApplication app = (WicketApplication) this.getApplication();
+       MovieCollection collection = app.getCollection();
+       List<Movie> movies = collection.getMovies();
+
+       PropertyListView movieListView =
+               new PropertyListView("movie_list", movies) {
+                   private static final long serialVersionUID = 1L;
+
+                   @Override
+                   protected void populateItem(ListItem item) {
+                       item.add(new Label("title"));
+                       item.add(new Label("year"));
+                   }
+               };
+       this.add(movieListView);
+   }
+
+.. note::
+
+   You can see the changes from the previous version at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/4a959f3f381a.
+   You can get a copy of this version by clicking on the download link on that
+   page.
+
+Exercise
+========
+
+* (*Warning*: DIFFICULT) Add a page that will display a movie
+  (see :ref:`screenshot_moviedisplaypage_movielinks`). Then, organize the
+  movie list page so that the entries are links to pages that will display
+  the selected movie (see :ref:`screenshot_movielistpage_movielinks`).
+  (:ref:`Solution <solutions_model_1>`)
+
+  .. _screenshot_moviedisplaypage_movielinks:
+
+  .. figure:: figures/screenshot-moviedisplaypage-movielinks.png
+
+     Screenshot: Movie display page.
+
+  .. _screenshot_movielistpage_movielinks:
+
+  .. figure:: figures/screenshot-movielistpage-movielinks.png
+
+     Screenshot: Movie list page with links to movie display pages.

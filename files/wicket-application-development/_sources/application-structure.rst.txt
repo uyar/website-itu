@@ -1,0 +1,252 @@
+*********************
+Application Structure
+*********************
+
+The pages in a web application share some components such as global navigation
+panels. In this chapter, we will see how to implement such components without
+repeating code. We will create a base page that will contain the components
+that all pages in the application will acquire. See
+:ref:`screenshot_homepage_structure` for the screenshot of the resulting
+home page.
+
+.. _screenshot_homepage_structure:
+
+.. figure:: figures/screenshot-homepage-structure.png
+
+   Screenshot: Home page containing navigation panel.
+
+Base Pages
+==========
+
+Adding shared components to multiple pages in an application is a tedious and
+error-prone approach. Therefore, we would like to be able to specify these at
+one point and let pages get them from that single source. For instance, we
+want all our pages to use the same footer that contains the date and time but
+we do not want to add a footer component to every page separately. Instead, we
+would like to add it to a base page and extend all pages from this base page.
+
+Add a new Java class named :class:`BasePage` to your package (*careful*: a
+Java class, not a Wicket page; there will be no template for this class). The
+code of the class is given in
+:ref:`Listing: Base page class with standard footer <listing_basepage_java_footer>`.
+Note that, the date and time label is already contained in this page
+(lines 15-17).
+
+.. _listing_basepage_java_footer:
+
+:Listing: Base page class with standard footer.
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import java.util.Date;
+
+   import org.apache.wicket.markup.html.WebPage;
+   import org.apache.wicket.markup.html.basic.Label;
+   import org.apache.wicket.model.IModel;
+
+   public class BasePage extends WebPage {
+       public BasePage() {
+           this(null);
+       }
+
+       public BasePage(IModel model) {
+           super(model);
+           Date now = new Date();
+           this.add(new Label("datetime", now.toString()));
+       }
+   }
+
+Now the :class:`HomePage` class will extend this :class:`BasePage` instead of
+the generic :class:`WebPage` (see
+:ref:`Listing: Home page class extending the base page class <listing_homepage_java_basepage>`)
+and it will not contain the label component for the footer anymore.
+
+.. _listing_homepage_java_basepage:
+
+:Listing: Home page class extending the base page class.
+
+.. code-block:: java
+   :linenos:
+
+   public class HomePage extends BasePage {
+       public HomePage() {
+           Link movieListPageLink = new Link("list_movies") {
+               @Override
+               public void onClick() {
+                   this.setResponsePage(new MovieListPage());
+               }
+           };
+           this.add(movieListPageLink);
+       }
+   }
+
+.. note::
+
+   You can see the changes from the previous version at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/46c3bd6d99f7.
+   You can get a copy of this version by clicking on the download link on that
+   page.
+
+Panels
+======
+
+Another improvement concerns the navigation. We might need links to the home
+page or the movie list page from many pages in the application. So, having a
+global navigation mechanism where all such links will be available in all
+pages might be a good idea. Wicket provides panels which let us handle
+components as a group. Add a :class:`NavigationPanel` class and its template
+HTML file to your package with the contents given in
+:ref:`Listing: Navigation panel template <listing_navigationpanel_html>` and
+:ref:`Listing: Navigation panel class <listing_navigationpanel_java>`. In the
+HTML template, we are only interested in the lines 9-14, the part where we
+describe the content of the panel. The corresponding :class:`NavigationPanel`
+class places the link components into this panel component.
+
+.. _listing_navigationpanel_html:
+
+:Listing: Navigation panel template.
+
+.. code-block:: html
+   :linenos:
+
+   <!DOCTYPE html>
+   <html xmlns:wicket="http://wicket.apache.org">
+     <head>
+       <meta charset="utf-8" />
+       <title>MovieDB</title>
+       <link rel="stylesheet" href="style.css" />
+     </head>
+     <body>
+       <wicket:panel>
+         <ul>
+           <li><a href="#" wicket:id="home">Home</a></li>
+           <li><a href="#" wicket:id="list_movies">List movies</a></li>
+         </ul>
+       </wicket:panel>
+     </body>
+   </html>
+
+.. _listing_navigationpanel_java:
+
+:Listing: Navigation panel class.
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   import org.apache.wicket.markup.html.link.Link;
+   import org.apache.wicket.markup.html.panel.Panel;
+
+   public class NavigationPanel extends Panel {
+       public NavigationPanel(String id) {
+           super(id);
+
+           Link homePageLink = new Link("home") {
+               @Override
+               public void onClick() {
+                   this.setResponsePage(new HomePage());
+               }
+           };
+           this.add(homePageLink);
+
+           Link movieListPageLink = new Link("list_movies") {
+               @Override
+               public void onClick() {
+                   this.setResponsePage(new MovieListPage());
+               }
+           };
+           this.add(movieListPageLink);
+       }
+   }
+
+To make this panel available in all pages, we add it to the base page
+(see :ref:`Listing: Base page class constructor with navigation panel <listing_basepage_java_navigationpanel>`,
+line 3).
+
+.. _listing_basepage_java_navigationpanel:
+
+:Listing: Base page class constructor with navigation panel.
+
+.. code-block:: java
+   :linenos:
+
+   public BasePage(IModel model) {
+       super(model);
+       this.add(new NavigationPanel("mainNavigation"));
+       Date now = new Date();
+       this.add(new Label("datetime", now.toString()));
+   }
+
+.. _listing_homepage_java_navigationpanel:
+
+Now the templates of our actual pages (the home page and the movie list page)
+will only add this panel instead of the links (see
+:ref:`Listing: Home page template with navigation panel <listing_homepage_html_navigationpanel>`,
+lines 3-5). Besides, since all components on the page are now inherited from
+the base page, the constructor of the :class:`HomePage` class becomes
+completely empty
+(see :ref:`Listing: Home page class with navigation panel <listing_homepage_java_navigationpanel>`).
+
+.. _listing_homepage_html_navigationpanel:
+
+:Listing: Home page template with navigation panel.
+
+.. code-block:: html
+   :linenos:
+
+   <body>
+     <header>
+       <nav wicket:id="mainNavigation">
+         navigation links
+       </nav>
+     </header>
+
+     <h1>MovieDB Homepage</h1>
+
+     <footer>
+       <div id="datetime" wicket:id="datetime">
+          Wed Sep 4 15:32:40 EEST 2013
+       </div>
+     </footer>
+   </body>
+
+:Listing: Home page class with navigation panel.
+
+.. code-block:: java
+   :linenos:
+
+   package wicket.quickstart;
+
+   public class HomePage extends BasePage {
+       public HomePage() {
+       }
+   }
+
+To display the navigation links side by side instead of as a list, let us add
+the following lines to the style sheet:
+
+.. code-block:: css
+
+   nav li {
+     display: inline;
+     margin-right: 1em;
+     font-size: 80%;
+   }
+
+.. note::
+
+   You can see the changes from the previous version at the address:
+   https://pikacode.com/uyar/wicket-application-development/commit/146972c319ad.
+   You can get a copy of this version by clicking on the download link on that
+   page.
+
+Exercise
+========
+
+* Arrange the movie list page so that it will use the same navigation panel
+  and footer. (:ref:`Solution <solutions_structure_1>`)
+

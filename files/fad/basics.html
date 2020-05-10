@@ -1,0 +1,628 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>1. Basics &mdash; Flask Tutorial</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2. Application Structure" href="application-structure.html" />
+    <link rel="prev" title="Flask Application Development" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Flask Application Development
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Basics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#applications">1.1. Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dynamic-content">1.2. Dynamic Content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-links">1.3. Adding Links</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="application-structure.html">2. Application Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-model.html">3. Data Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="forms.html">4. Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logins.html">5. Logins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="persistence.html">6. Persistence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solutions.html">7. Solutions to Exercises</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Flask Application Development</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>1. Basics</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="basics">
+<h1>1. Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we’re going to develop an application for managing
+a movie collection. We’ll start by creating a simple home page containing
+only a title. Then, we’ll add a greeting message based on the current date
+to show how dynamic content is generated. Next, we’ll create another page,
+again containing only a title. This second page will be populated
+with the list of movies in later chapters. Finally, we’ll provide a link
+from the home page to the movie list page. In the end, the home page will look
+as shown in <a class="reference internal" href="#fig-basics-homepage"><span class="std std-numref">Fig. 1.1</span></a>.</p>
+<div class="figure align-center" id="id1">
+<span id="fig-basics-homepage"></span><img alt="Screenshot of home page with message and link." src="_images/basics_homepage.png" />
+<p class="caption"><span class="caption-number">Fig. 1.1 </span><span class="caption-text">Home page containing a greeting message and a link to the movie list page.</span></p>
+</div>
+<div class="section" id="applications">
+<h2>1.1. Applications<a class="headerlink" href="#applications" title="Permalink to this headline">¶</a></h2>
+<p>Using Flask, we can create a web application in just one source file.
+In <a class="reference internal" href="#lst-server-v0101"><span class="std std-numref">Listing 1.1</span></a>, you can see the code for a very simple
+application that serves only one page with only a title in it. Save this code
+in a file named <code class="file docutils literal notranslate"><span class="pre">server.py</span></code> and run it using the command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">server</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>Now, when you visit the address <code class="docutils literal notranslate"><span class="pre">http://localhost:8080/</span></code> you should see
+the title.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<span id="lst-server-v0101"></span><div class="code-block-caption"><span class="caption-number">Listing 1.1 </span><span class="caption-text">Application with only a title
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">server.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0101</span></code>).</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">home_page</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s2">&quot;My movie collection&quot;</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Let’s go over this code line by line:</p>
+<ul>
+<li><p class="first">Line 1: The <code class="docutils literal notranslate"><span class="pre">Flask</span></code> application class gets imported. Applications are
+instances of this class.</p>
+</li>
+<li><p class="first">Line 4: An application of this class gets instantiated.</p>
+</li>
+<li><p class="first">Line 13: The application gets started. The <code class="docutils literal notranslate"><span class="pre">host</span></code> parameter specifies
+that the server should be publicly available, and the <code class="docutils literal notranslate"><span class="pre">port</span></code> parameter
+specifies that it should run on port 8080. We also set the application
+to run in debug mode to get better feedback about errors.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Debug mode causes security problems. Therefore this mode should be
+enabled only during development.</p>
+</div>
+</li>
+<li><p class="first">Lines 7-9: A <em>view function</em> is defined to handle requests to the home page.
+It simply returns a string containing the title. The <code class="docutils literal notranslate"><span class="pre">route</span></code> decorator
+registers the <code class="docutils literal notranslate"><span class="pre">/</span></code> route with this function. So whenever there is a request
+to the <code class="docutils literal notranslate"><span class="pre">/</span></code> route, this function will be invoked and its result will be sent
+back to the client as the response.</p>
+</li>
+</ul>
+<p>Note that the string returned by the view function is not an HTML page,
+but only a string. We could return an HTML page as in:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="s2">&quot;&quot;&quot;&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html lang=&quot;en&quot;&gt;</span>
+<span class="s2">  &lt;head&gt;</span>
+<span class="s2">    &lt;meta charset=&quot;utf-8&quot;/&gt;</span>
+<span class="s2">    &lt;title&gt;My movies&lt;/title&gt;</span>
+<span class="s2">  &lt;/head&gt;</span>
+<span class="s2">  &lt;body&gt;</span>
+<span class="s2">    &lt;h1&gt;My movie collection&lt;/h1&gt;</span>
+<span class="s2">  &lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>But this would not only make the code less readable, it would also be very
+difficult to maintain. The proper way to handle this is to use a template
+that contains the HTML markup. By default, Flask looks for template files
+in the <code class="file docutils literal notranslate"><span class="pre">templates</span></code> folder; so we create a file named <code class="file docutils literal notranslate"><span class="pre">home.html</span></code>
+in that folder to contain the home page template given
+in <a class="reference internal" href="#lst-home-v0102"><span class="std std-numref">Listing 1.2</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<span id="lst-home-v0102"></span><div class="code-block-caption"><span class="caption-number">Listing 1.2 </span><span class="caption-text">Initial home page template
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">templates/home.html</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0102</span></code>).</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-html notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">/&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>My movies - Home<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;/static/mymovies.css&quot;</span><span class="p">/&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>My movie collection<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Now, as shown in <a class="reference internal" href="#lst-server-v0102"><span class="std std-numref">Listing 1.3</span></a>, we can import a function
+for rendering a template (line 1), and the view function can call it to render
+the home page (line 9).</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<span id="lst-server-v0102"></span><div class="code-block-caption"><span class="caption-number">Listing 1.3 </span><span class="caption-text">Application using a template
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">server.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0102</span></code>).</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span>
+</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">home_page</span><span class="p">():</span>
+<span class="hll">    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;home.html&quot;</span><span class="p">)</span>
+</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Static files like images and style sheets are placed into the <code class="file docutils literal notranslate"><span class="pre">static</span></code>
+folder. Our template (<a class="reference internal" href="#lst-home-v0102"><span class="std std-numref">Listing 1.2</span></a>) contains a style sheet
+reference on line 6. To make this reference work, we create the file
+<code class="file docutils literal notranslate"><span class="pre">static/mymovies.css</span></code> with the contents given
+in <a class="reference internal" href="#lst-style-v0102"><span class="std std-numref">Listing 1.4</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<span id="lst-style-v0102"></span><div class="code-block-caption"><span class="caption-number">Listing 1.4 </span><span class="caption-text">Style sheet for the application
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">static/mymovies.css</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0102</span></code>).</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="highlight-css notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">h1</span> <span class="p">{</span>
+    <span class="k">color</span><span class="p">:</span> <span class="mh">#e9601a</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+<div class="section" id="dynamic-content">
+<h2>1.2. Dynamic Content<a class="headerlink" href="#dynamic-content" title="Permalink to this headline">¶</a></h2>
+<p>Let’s add a greeting message to our home page based on the current date.
+We first change our template to add the necessary markup
+(<a class="reference internal" href="#lst-home-v0103"><span class="std std-numref">Listing 1.5</span></a>, line 10).</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<span id="lst-home-v0103"></span><div class="code-block-caption"><span class="caption-number">Listing 1.5 </span><span class="caption-text">Home page markup with dynamic greeting message
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">templates/home.html</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0103</span></code>).</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="highlight-html notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">/&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>My movies - Home<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;/static/mymovies.css&quot;</span><span class="p">/&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>My movie collection<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+<span class="hll">    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Have a nice {{ day }}!<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+</span>  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Since the name of the current day will change between different visits,
+we need our template system to be able to generate the HTML output dynamically.
+For this purpose, we’re going to use <a class="reference external" href="http://jinja.pocoo.org/">Jinja</a>,
+which is the default template system used by Flask.</p>
+<p>In Jinja templates, the parts marked with <code class="docutils literal notranslate"><span class="pre">{{</span></code> and <code class="docutils literal notranslate"><span class="pre">}}</span></code> will be replaced
+by the value of the expression they contain. The parameters in the expression
+have to be supplied by the view function that renders this template.
+In our example, the <code class="docutils literal notranslate"><span class="pre">home_page</span></code> function has to send a value for <code class="docutils literal notranslate"><span class="pre">day</span></code>
+as a parameter. <a class="reference internal" href="#lst-server-v0103"><span class="std std-numref">Listing 1.6</span></a> shows how the view function decides
+the name of the current day (lines 11-12), and sends it to the template
+(line 13).</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<span id="lst-server-v0103"></span><div class="code-block-caption"><span class="caption-number">Listing 1.6 </span><span class="caption-text">View function sending parameter
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">server.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0103</span></code>).</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">home_page</span><span class="p">():</span>
+<span class="hll">    <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+</span><span class="hll">    <span class="n">day_name</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%A&quot;</span><span class="p">)</span>
+</span><span class="hll">    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;home.html&quot;</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="n">day_name</span><span class="p">)</span>
+</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>The application, as implemented so far, runs as follows:</p>
+<ul class="simple">
+<li>An application object gets instantiated.</li>
+<li>The application registers the <code class="docutils literal notranslate"><span class="pre">home_page</span></code> function to respond to requests
+for the <code class="docutils literal notranslate"><span class="pre">/</span></code> route.</li>
+<li>The application starts running on the localhost on port 8080 and
+waits for requests.</li>
+<li>When a request comes for <code class="docutils literal notranslate"><span class="pre">http://localhost:8080/</span></code>, the <code class="docutils literal notranslate"><span class="pre">home_page</span></code>
+function gets invoked.</li>
+<li>This function gets the current day and renders the home page template,
+passing the name of the day as a parameter to it. The server sends
+the rendered page back to the client.</li>
+<li>The client parses the response and encounters the link for the style sheet.
+It makes a request to <code class="docutils literal notranslate"><span class="pre">http://localhost:8080/static/mymovies.css</span></code>.</li>
+<li>The server sends back the <code class="file docutils literal notranslate"><span class="pre">mymovies.css</span></code> file.</li>
+</ul>
+</div>
+<div class="section" id="adding-links">
+<h2>1.3. Adding Links<a class="headerlink" href="#adding-links" title="Permalink to this headline">¶</a></h2>
+<p>Now we want to create a second page which will be used for listing the movies
+in the collection. At first, the page will only contain some static text;
+it will be populated in later chapters. The template for the page is given
+in <a class="reference internal" href="#lst-movies-v0104"><span class="std std-numref">Listing 1.7</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<span id="lst-movies-v0104"></span><div class="code-block-caption"><span class="caption-number">Listing 1.7 </span><span class="caption-text">Initial template for movie list page
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">templates/movies.html</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0104</span></code>).</span><a class="headerlink" href="#id8" title="Permalink to this code">¶</a></div>
+<div class="highlight-html notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">/&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>My movies - Movie list<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;/static/mymovies.css&quot;</span><span class="p">/&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Movies<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Our application needs a view function to respond to requests for this page.
+We register the <code class="docutils literal notranslate"><span class="pre">movies_page</span></code> function to handle the <code class="docutils literal notranslate"><span class="pre">/movies</span></code> route
+(<a class="reference internal" href="#lst-server-v0104"><span class="std std-numref">Listing 1.8</span></a>, lines 16-18).</p>
+<div class="literal-block-wrapper docutils container" id="id9">
+<span id="lst-server-v0104"></span><div class="code-block-caption"><span class="caption-number">Listing 1.8 </span><span class="caption-text">Application with a movie list page view function
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">server.py</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0104</span></code>).</span><a class="headerlink" href="#id9" title="Permalink to this code">¶</a></div>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">home_page</span><span class="p">():</span>
+    <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+    <span class="n">day_name</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%A&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;home.html&quot;</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="n">day_name</span><span class="p">)</span>
+
+
+<span class="hll"><span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/movies&quot;</span><span class="p">)</span>
+</span><span class="hll"><span class="k">def</span> <span class="nf">movies_page</span><span class="p">():</span>
+</span><span class="hll">    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;movies.html&quot;</span><span class="p">)</span>
+</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;0.0.0.0&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<p>Our last step will be to provide a link from the home page to the movie list
+page. To achieve this, we just have to modify the home page template
+(<a class="reference internal" href="#lst-home-v0104"><span class="std std-numref">Listing 1.9</span></a>, lines 12-14).</p>
+<div class="literal-block-wrapper docutils container" id="id10">
+<span id="lst-home-v0104"></span><div class="code-block-caption"><span class="caption-number">Listing 1.9 </span><span class="caption-text">Home page template with link to movie list page
+(file:&nbsp;<code class="file docutils literal notranslate"><span class="pre">templates/home.html</span></code>, version:&nbsp;<code class="docutils literal notranslate"><span class="pre">v0104</span></code>).</span><a class="headerlink" href="#id10" title="Permalink to this code">¶</a></div>
+<div class="highlight-html notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">/&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>My movies - Home<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;/static/mymovies.css&quot;</span><span class="p">/&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>My movie collection<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>Have a nice {{ day }}!<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+<span class="hll">    <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+</span><span class="hll">      <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;/movies&quot;</span><span class="p">&gt;</span>List movies<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+</span><span class="hll">    <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+</span>  <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="admonition-exercise-1 admonition">
+<p class="first admonition-title">Exercise 1</p>
+<p class="last">Add a link from the movie list page to the home page.
+(<a class="reference internal" href="solutions.html#solutions-basics-link"><span class="std std-ref">Solution</span></a>)</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="application-structure.html" class="btn btn-neutral float-right" title="2. Application Structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Flask Application Development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2018, H. Turgut Uyar
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

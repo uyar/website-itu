@@ -1,0 +1,157 @@
+To: linux-dist@linux.org.tr
+Subject: [linux-dist] E$$EGIN SEYIR DEFTERI [I]
+
+
+Merhaba,
+
+E$$EGIN SEYIR DEFTERI (TM) serisi linux-dist uyelerini Turkuaz gelisimi
+konusunda bilgilendirmek amaci ile baslatilmistir. Doga ustu olaylar ve 
+periyodik hastane ziyaretleri engellemedigi surece haftada bir E$$EGIN
+SEYIR DEFTERI ile karsinizda olacagiz. 
+
+Once en onemli bilgi: bu tartisma listesinden ayrilmak icin, 
+
+	majordomo@linux.org.tr
+
+adresine, mesaj kisminda: 
+
+	unsubscribe linux-dist 
+
+yazan bir e-mail gondermeniz yeterli olacaktir. (Acele edin kontenjanimiz
+sinirlidir) 
+
+E$$EGIN SEYIR DEFTERI asagida belirtilen dogrultuda hareket edecektir:
+
+--------------------------------------------------------------------- 
+listeye iki gune bir yeni adam geliyor.
+bu sebeple sen de haftada bir simdiye kadar neler yapildigini listeye
+gecer misin ?
+
+*****
+SU WEB ADRESININ SU SAYFASINA BAKIN DEMEMEK KAYDIYLA
+*****
+
+yani yazacaklarin baska yerlere referans olmayacak. (annas$ik ?)
+---------------------------------------------------------------------
+
+Dolayisi ile bu mesajlarda "http://" gibi anlamsiz karakterler ile
+karsilasmayacaksiniz. Tabii ki burada yer alan bilgilerin hepsini sevgili
+e$$eginiz bir yerlerde sus olsun diye web'e geciriyor, ama siz keyfinizi
+hic bozmayin :-). 
+
+Dagitimin Durumu:
+*****************
+
+Turkuaz, guncel surumu 0.4.1. Bu surumun Beta kalitede oldugunu iddia
+ediyoruz, yani hala uzerinde calismalar devam ediyor, ama genel olarak
+bircok ozelliginin calismasi gerekir, sistem kullanilabilir ve calisir
+durumda, zaten buyuk kismi RH5.0 ile ayni, tabii ki ekledigimiz
+yazilimlar, duzelttigimiz hatalar vs var.
+
+Rahat rahat yukleyip oynayabilirsiniz, tek dezavantaji, iki hafta sonra
+bayagi bir sey daha eklenmis ve degismis olmasi muhtemel.. :-) 
+
+Son Gelismeler:
+***************
+
+RH, 5.0 icin hazirladigi el kitabini tercume etmemizi, kendi
+ihtiyaclarimiza gore degistirmemize izin verdi. Bir dizi "gonullendirilen"
+arkadas turkuaz-kitap isimli bir listede Turkuaz ile dagitilacak olan el
+kitabi icin calismaya basladilar.
+
+Locale ile ilgili minik bir sorun var. Avrupalilarin "i" harfinin kucugunu
+noktali buyugunu "I" noktasiz yazma anlamsizliklari yuzunden oluyor. Neyse
+ki Turkler olarak son derece hosgoruluyuz ve bu hatalarini suratlarina
+vurmayip kendi LOCALE'imizde bir degisiklik ile yetiniyoruz.
+
+ODTU'de 400Mbyte disk alani kaplayan (ve ayni zamanda bizim makinadan
+baglanan) Turkuaz dagitimi yansisi kullanabilir hale geldi. 
+
+Turkuaz'i gelistirenleri tanitan bir sayfa hazirlandi
+
+Iki dergi mart-nisan arasinda bir Linux dagitimi vermek istediklerini
+belirttiler, bir ise yarayacak gibiyse Turkuaz koyabilirlermis..
+
+
+Oncelikli Yapilacak Olanlar:
+****************************
+
+El kitabi hazirlanacak, turkuaz-kitap bu is icin.
+
+Yukleme sirasinda gelen paket gruplari yeniden tanimlanacak ve guzel on
+tanimlar verilecek
+
+e$$egin biri Turkuaz'in tum X kurulumunu duzenlemek istiyor. 
+
+Hala Turkuaz'a paket ekleme ve guncelleme isine devam ediyoruz. Bir
+yerlerde su ana kadar ekledigimiz paketler var. Baska onerileriniz varsa
+bekleriz. (Listede yer alan paketleri kullanip, aman ne guzel olmus
+demeniz tercih sebebidir :-)
+
+Turkuaz cok acayip siradisi bir sey oldugu icin, ancak cok iyi koruma
+altinda olan ve isvicreli bilim adamlarinin denetimi altinda bir iki
+makina uzerinde denenebilmektedir. E$$eklerin katkida bulunuyor olmasi bu
+dagitimi kullanmaniza engel degil, paketlerin kullanilmasi ve denenmesi ve
+goruslerinizin bildirilmesi gerekiyor. 
+
+Beta-test olarak adlandirilan bu islem sirasinda karsilastiklarinizi
+iletebileceginiz bir adres var. Ancak isinizi gucunuzu birakarak bu ucube
+dagitimi denediginiz yetmiyormus gibi bir de bazi ek bilgiler vermeniz
+gerekiyor (hani ne gibi hata mesaji verdi, ne yapiyordunuz gibilerinden) .
+Bir yerlerde bunlar hakkinda ayrintili bilgi var.. simdi
+yazardim bunu, ama ya siz sonra okumaz ve oneriler disinda hareket
+ederseniz ne olacak, e$$egin biri bozulacak ve tonla tatsizlik cikacak...
+hersey sizin icin
+
+Ortalama bir linux sisteminde 5-30 Mbyte arasi belge var. bunlarin
+cogunlugu Ingilizce. Daha cok kullanicinin yararlanabilmesi icin bunlardan
+bir kismini daha anlasilir bir dile cevirmek yararli olabilir. Kilavuz
+sayfalari (man pages), NASIL belgeleri (HOWTO) ve yazilimlarin mesaj
+dosyalari bunlar arasinda yer aliyor. Hepsine yetisemeyecegimiz acik, ama
+bir yerden baslamak lazim. 
+
+
+Neler Yapabilirsiniz:
+*********************
+
+Herseyden once bilgisayarinizin bir kosesine soyle genis genis Turkuaz
+kurabilirsiniz, Hatta bunu bir aliskanlik haline getirip her sabah bir
+kere kurarak yasadiginiz bu deneyimleri arkadaslarinizla 
+paylasabilirsiniz, tabii bize de anlatirsaniz seviniriz. 
+
+Cok fazla ceviri ve yazi isimiz var. Bunun icin acayip bir uzman olmaya
+gerek yok, ingilizce okuma, anlama ve Turkce yazma kabiliyeti genelde
+yeterli. Belgelerde kullanabileceginiz kelimeler ile ilgili de bir
+yerlerde bir sozlugumuz var. Bos zamanlarinizda "aaaa hoparlor'e hic
+yuksek sesli konusan denir mi ya... aman ne komik.." gibi yapici
+katkilarda bulunabileceginiz linux-terim listesi var. 
+
+Kullanilan yazilimlardan bazilari sadece ingilizce mesaj verecek sekilde
+yazilmis. Bunlara cesitli dillerde mesaj kataloglarini okuyabilecek
+yetenegi kazandirmak gerekiyor. (gettext olayi) Maalesef bu is icin biraz
+bir yerlerde yazan bilgileri okumak gerekiyor.. 
+
+Dagitimi kendi istegimize gore sekillendirebiliyoruz: bu su anlama
+geliyor, bir dagitimda yer almasini isteyebileceginiz ozellikleri
+ekleyebiliriz. Tabii bunun sonucunda dagitim ciktiktan sonra, "Ben olsam
+sunu da yapardim, niye soyle yapmamislar anlamadim" gibi bazi sevilen
+cumleleri kullanirken dikkatli olmak gerekebilir.   
+
+Sevdiginiz, dagitimda bulunmasini isteyeceginiz paketleri ve yazilimlari
+bildirebilirsiniz (IRC, IRC+ IRC++, IRC^IRC vs...) 
+
+Tabii bu aptal isler disinda, IRC takilabilirsiniz ve sagda solda "yaw 
+internet cok iyi bi sey abi yeaaa." tarzi yararli konusmalara
+girebilirsiniz. Haaaa bi de dunyada bilgisayar disinda seyler de var (ya
+da galiba). 
+
+
+Tum saygilariyla, 
+
+
+e$$eginiz...
+
+NOT: aslinda yazacak bir sey yok, ama boyle mesajin sonuna not dusmek cok
+havali oluyor: E$$EGIN SEYIR DEFTERI sizi rahatsiz ediyorsa, okumayin,
+adi uzerine E$$EGIN SEYIR DEFTERI ne bekliyordunuz yani..  
+
