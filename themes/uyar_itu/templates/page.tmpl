@@ -5,7 +5,9 @@
 <%inherit file="story.tmpl"/>
 
 <%block name="content">
-    ${pheader.html_title()}
+    %if title and not post.meta('hidetitle'):
+        <h1 class="p-name entry-title" itemprop="headline name">${post.title()|h}</h1>
+    %endif
     ${post.text()}
     ${helper.html_comments(post)}
     ${math.math_scripts_ifpost(post)}

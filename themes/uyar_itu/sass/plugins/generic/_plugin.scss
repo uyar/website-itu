@@ -1,4 +1,5 @@
 $family-sans: Arial, Helvetica, sans-serif !default;
+$link-color: $picnic-primary !default;
 
 * {
   box-sizing: inherit;
@@ -35,7 +36,7 @@ li {
 }
 
 a {
-  color: $picnic-primary;
+  color: $link-color;
   text-decoration: none;
   box-shadow: none;
   transition: $picnic-transition;

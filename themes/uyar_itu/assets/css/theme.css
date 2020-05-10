@@ -145,24 +145,7 @@
 	display: inline;
 }
 
-/* Links */
-:link {
-	color: #1168CC;
-	text-decoration: none;
-}
-:visited {
-	color: #6830BB;
-}
-:link:hover, :visited:hover {
-	color: #0d53a3;
-}
-
 /* Images */
-img {
-	border: none;
-	line-height: 1;
-}
-
 .postpage img,
 .postpage object,
 .postindex article img,
