@@ -1,4 +1,9 @@
+# -*- coding: utf-8 -*-
+
 import time
+
+# !! This is the configuration of Nikola. !! #
+# !!  You should edit it to your liking.  !! #
 
 
 # ! Some settings can be different in different languages.
@@ -95,7 +100,7 @@ DEFAULT_LANG = "tr"
 # The format is {"translationcode" : "path/to/translation" }
 # the path will be used as a prefix for the generated pages location
 TRANSLATIONS = {
-    "tr": "",
+    DEFAULT_LANG: "",
     "en": "./en",
 }
 
@@ -135,14 +140,16 @@ TRANSLATIONS_PATTERN = '{path}.{lang}.{ext}'
 #          else they won’t be highlighted when active.
 
 NAVIGATION_LINKS = {
-    "tr": (
+    DEFAULT_LANG: (
         ("/", "Ana sayfa"),
         ("/dersler/", "Dersler"),
+        ("/projeler/", "Projeler"),
 #        ("/blog/", "Blog"),
     ),
     "en": (
         ("/en/", "Home"),
         ("/en/courses/", "Courses"),
+        ("/en/projects/", "Projects"),
 #        ("/en/blog/", "Blog"),
     ),
 }

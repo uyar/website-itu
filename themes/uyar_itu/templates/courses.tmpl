@@ -8,7 +8,9 @@
       </header>
       <p>${course['description']}</p>
       <footer>
-        <a href="${course['link']}" class="pseudo button">${messages("Catalog page", lang)}</a>
+        % if 'link' in course:
+          <a href="${course['link']}" class="pseudo button">${messages("Catalog page", lang)}</a>
+        % endif
         % if 'slides' in course:
           <a href="${course['slides']}" class="pseudo button">${messages("Slides", lang)}</a>
         % endif

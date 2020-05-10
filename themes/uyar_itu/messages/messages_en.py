@@ -30,6 +30,7 @@ MESSAGES = {
     "Posts for {month_year}": "Posts for {month_year}",
     "Previous post": "Previous post",
     "Previous": "Previous",
+    "Project page": "Project page",
     "Publication date": "Publication date",
     "RSS feed": "RSS feed",
     "Read in English": "Read in English",

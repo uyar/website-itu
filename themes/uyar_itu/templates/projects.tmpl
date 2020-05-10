@@ -1,0 +1,21 @@
+<%inherit file="page.tmpl"/>
+
+<%block name="extra_content">
+  <div class="flex two-600">
+  % for project in data['projects'][lang]:
+    <div>
+      <article class="card">
+        <header>
+          <h3>${project['title']}</h3>
+        </header>
+        ${project['description']|n}
+        % if 'link' in project:
+          <footer>
+            <a href="${project['link']}" class="pseudo button">${messages("Project page", lang)}</a>
+          </footer>
+        % endif
+      </article>
+    </div>
+  % endfor
+  </div>
+</%block>

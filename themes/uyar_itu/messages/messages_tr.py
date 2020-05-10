@@ -30,6 +30,7 @@ MESSAGES = {
     "Posts for {month_year}": "{month_year} göre yazılar",
     "Previous post": "Önceki yazı",
     "Previous": "",
+    "Project page": "Proje sayfası",
     "Publication date": "Yayınlanma tarihi",
     "RSS feed": "RSS kaynağı",
     "Read in English": "Türkçe olarak oku",

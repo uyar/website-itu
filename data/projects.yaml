@@ -1,0 +1,137 @@
+tr:
+  - title: piculet
+    description: >
+      <p>XML (ve HTML) belgelerinden XPath sorgularıyla veri çekmek için
+        Python modülü.</p>
+    link: https://tekir.org/piculet/
+  - title: pygenstub
+    description: >
+      <p>Python kaynak kodu açıklamalarından tip belirtim dosyası türetme aracı.</p>
+    link: https://tekir.org/pygenstub/
+  - title: pathstring
+    description: >
+      <p>Dosya sistemi adreslerini işlemek için bir Python modülü.</p>
+    link: https://pypi.org/project/pathstring/
+  - title: kirlent_sphinx
+    description: >
+      <p><a href="https://www.sphinx-doc.org/">Sphinx</a> için
+        yansı hazırlama eklentisi.</p>
+    link: https://gitlab.com/tekir/kirlent_sphinx
+  - title: lektor-cssbuild
+    description: >
+      <p><a href="https://www.getlektor.com/">Lektor</a> statik site üretecinin
+        site oluşturma aşamasında CSS dosyalarını oluşturmak için eklenti.</p>
+    link: https://github.com/uyar/lektor-cssbuild
+  - title: lektor-chameleon
+    description: >
+      <p><a href="https://www.getlektor.com/">Lektor</a> statik site üretecinde
+        şablonları <a href="https://chameleon.readthedocs.io/">Chameleon</a>
+        ile yazmak için eklenti.</p>
+    link: https://github.com/uyar/lektor-chameleon
+  - title: calico
+    description: >
+      <p>Komut satırı programları için giriş-çıkış sınayıcı.</p>
+    link: https://github.com/itublg/calico
+  - title: imdbpy
+    description: >
+      <p><em>baş geliştirici</em>: <a href="https://github.com/alberanid">Davide Alberani</a></p>
+      <p>IMDb sayfalarından veri çekmek için HTML ayrıştırıcıları.</p>
+    link: https://imdbpy.github.io/
+  - title: Askeri Müze Sanal Gezisi (1999-2000)
+    description: >
+      <p>İstanbul Harbiye Askeri Müzesi sergi salonlarının 360° sanal gezisi.</p>
+  - title: Turkuaz GNU/Linux (1997-1999)
+    description: >
+      <p>Türkçe destekli bir GNU/Linux dağıtımı.</p>
+
+      <p>1990'lı yıllarda dağıtımları İngilizce dışında dillerde kurmak ve kullanmak
+        son kullanıcılar için kolay değildi.
+        Pek çok uygulama farklı dilleri destekleyen yazı tipleriyle çalışabiliyordu
+        ve mesajlarının çevrilebileceği altyapıya sahiplerdi
+        ama bu işlemlerin nasıl yapılacağına ilişkin bilgiler dağınık ve eksikti.
+        Turkuaz projesinin amacı hem kurulumun Türkçe yapılabilmesi
+        hem de kurulum sonunda Türkçe kullanmaya hazır bir sistem elde etmekti.
+        Proje kapsamında yapılan başlıca çalışmalar şunlardır:</p>
+
+      <ul>
+        <li>RedHat dağıtımının kurulum yazılımına dil desteği eklenmesi.</li>
+        <li>Türkçe kullanım için gerekli sistem ayarlarının yapılması.</li>
+        <li>Türkçe kullanmaya uygun uygulamaların sistemde hazır bulunması.</li>
+        <li>Önemli yazılımların mesajlarının Türkçeye çevrilmesi.</li>
+        <li>Kapsamlı bir kullanıcı kılavuzu yazılması.</li>
+      </ul>
+
+      <p>Turkuaz projesi sağladığı bütün ilerlemelerin orijinal projelere girmesini
+        ve kendisine gerek kalmamasını hedeflemişti.
+        Bu hedefe büyük oranda ulaşılmasından sonra proje sürdürülmemiştir.</p>
+    link: https://tr.wikipedia.org/wiki/Turkuaz_Linux
+en:
+  - title: piculet
+    description: >
+      <p>Python module for extracting data from XML (and HTML) documents
+        using XPath queries.</p>
+    link: https://tekir.org/piculet/
+  - title: pygenstub
+    description: >
+      <p>Utility for generating type annotation stub files from Python docstrings.</p>
+    link: https://tekir.org/pygenstub/
+  - title: pathstring
+    description: >
+      <p>Python module for handling file system paths.</p>
+    link: https://pypi.org/project/pathstring/
+  - title: kirlent_sphinx
+    description: >
+      <p>Slide generation extension
+        for <a href="https://www.sphinx-doc.org/">Sphinx</a>.</p>
+    link: https://gitlab.com/tekir/kirlent_sphinx
+  - title: lektor-cssbuild
+    description: >
+      <p>Plugin for building CSS files during the build process
+        in the <a href="https://www.getlektor.com/">Lektor</a>
+        static site generator.</p>
+    link: https://github.com/uyar/lektor-cssbuild
+  - title: lektor-chameleon
+    description: >
+      <p>Plugin for writing templates using
+        <a href="https://chameleon.readthedocs.io/">Chameleon</a>
+        in the <a href="https://www.getlektor.com/">Lektor</a>
+        static site generator.</p>
+    link: https://github.com/uyar/lektor-chameleon
+  - title: calico
+    description: >
+      <p>I/O checker for command-line programs.</p>
+    link: https://github.com/itublg/calico
+  - title: imdbpy
+    description: >
+      <p><em>lead developer</em>: <a href="https://github.com/alberanid">Davide Alberani</a></p>
+      <p>HTML parsers for extracting data from IMDb pages.</p>
+    link: https://imdbpy.github.io/
+  - title: Military Museum Virtual Tour (1999-2000)
+    description: >
+      <p>A 360° virtual tour of the exhibition rooms of the Military Museum in Harbiye, Istanbul.</p>
+  - title: Turkuaz GNU/Linux (1997-1999)
+    description: >
+      <p>A GNU/Linux distribution with out-of-the-box support for Turkish.</p>
+
+      <p>In the 1990s it was difficult for end-users
+        to install and use distributions in languages other than English.
+        Most applications would work with fonts that supported different languages
+        and they had the infrastructure for translating their messages
+        but the information about how to do these was scattered and incomplete.
+        The aim of the Turkuaz project was to make it possible
+        to install the distribution in Turkish
+        and obtain a system that would be ready to use in the Turkish language.
+        The work that was completed during the project included:</p>
+
+      <ul>
+        <li>Adding support for other languages to the installer of the RedHat distribution.</li>
+        <li>Configuring the system for Turkish support.</li>
+        <li>Install applications that are suitable for use in Turkish.</li>
+        <li>Translating the messages of important software packages into Turkish.</li>
+        <li>Writing a comprehensive user manual.</li>
+      </ul>
+
+      <p>The Turkuaz project's goal was to get all of its contribution
+        into the original projects and therefore make itself obsolete.
+        After reaching this goal the project was discontinued.</p>
+    link: https://tr.wikipedia.org/wiki/Turkuaz_Linux
