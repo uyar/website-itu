@@ -1,0 +1,18 @@
+<%inherit file="page.tmpl"/>
+
+<%block name="extra_content">
+  % for course in data['courses'][lang]:
+    <article class="card">
+      <header>
+        <h3>${course['title']}</h3>
+      </header>
+      <p>${course['description']}</p>
+      <footer>
+        <a href="${course['link']}" class="pseudo button">${messages("Catalog page", lang)}</a>
+        % if 'slides' in course:
+          <a href="${course['slides']}" class="pseudo button">${messages("Slides", lang)}</a>
+        % endif
+      </footer>
+    </article>
+  % endfor
+</%block>

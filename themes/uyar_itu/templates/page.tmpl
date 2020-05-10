@@ -8,9 +8,10 @@
     %if title and not post.meta('hidetitle'):
         <h1 class="p-name entry-title" itemprop="headline name">${post.title()|h}</h1>
     %endif
+    ${pheader.html_translations(post)}
     ${post.text()}
     ${helper.html_comments(post)}
     ${math.math_scripts_ifpost(post)}
-</article>
+    <%block name="extra_content"></%block>
 ${comments.comment_link_script()}
 </%block>
