@@ -100,7 +100,7 @@ DEFAULT_LANG = "tr"
 # The format is {"translationcode" : "path/to/translation" }
 # the path will be used as a prefix for the generated pages location
 TRANSLATIONS = {
-    DEFAULT_LANG: "",
+    "tr": "",
     "en": "./en",
 }
 
@@ -140,7 +140,7 @@ TRANSLATIONS_PATTERN = '{path}.{lang}.{ext}'
 #          else they won’t be highlighted when active.
 
 NAVIGATION_LINKS = {
-    DEFAULT_LANG: (
+    "tr": (
         ("/", "Ana sayfa"),
         ("/dersler/", "Dersler"),
         ("/projeler/", "Projeler"),
@@ -950,7 +950,7 @@ LICENSE = ""
 # (translatable)
 CONTENT_FOOTER = {
     "tr": '<small>İçerik &copy; 2018-{date}         {author} - <a href="https://getnikola.com/" rel="nofollow">Nikola</a>         ve <a href="https://picnicss.com/" rel="nofollow">Picnic CSS</a>         ile üretilmiştir         {license}</small>',
-    "en": '<small>Contents &copy; 2018-{date}         {author} - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         and <a href="https://picnicss.com/" rel="nofollow">Picnic CSS</a>         {license}</small>',
+    "en": '<small>Contents &copy; 2018-{date}         {author} - Generated using         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         and <a href="https://picnicss.com/" rel="nofollow">Picnic CSS</a>         {license}</small>',
 }
 
 # Things that will be passed to CONTENT_FOOTER.format().  This is done
