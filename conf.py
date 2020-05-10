@@ -138,12 +138,12 @@ NAVIGATION_LINKS = {
     "tr": (
         ("/", "Ana sayfa"),
         ("/dersler/", "Dersler"),
-        ("/blog/", "Blog"),
+#        ("/blog/", "Blog"),
     ),
     "en": (
         ("/en/", "Home"),
         ("/en/courses/", "Courses"),
-        ("/en/blog/", "Blog"),
+#        ("/en/blog/", "Blog"),
     ),
 }
 
