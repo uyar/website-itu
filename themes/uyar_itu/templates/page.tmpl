@@ -5,11 +5,13 @@
 <%inherit file="story.tmpl"/>
 
 <%block name="content">
+<section class="${post.meta('type')}">
     %if title and not post.meta('hidetitle'):
         <h1 class="p-name entry-title" itemprop="headline name">${post.title()|h}</h1>
     %endif
     ${pheader.html_translations(post)}
     ${post.text()}
+</section>
     ${helper.html_comments(post)}
     ${math.math_scripts_ifpost(post)}
     <%block name="extra_content"></%block>

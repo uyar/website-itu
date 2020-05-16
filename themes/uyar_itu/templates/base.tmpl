@@ -10,11 +10,6 @@ ${base.html_headstart()}
 </%block>
 ${template_hooks['extra_head']()}
 </head>
-% if post and post.meta('body_class'):
-<body class="${post.meta('body_class')}">
-% else:
-<body>
-% endif
 <body>
     <a href="#content" class="sr-only sr-only-focusable">${messages("Skip to main content")}</a>
         ${header.html_header()}

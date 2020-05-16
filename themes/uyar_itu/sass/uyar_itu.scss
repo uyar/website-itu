@@ -64,6 +64,8 @@ $picnic-card-radius: 0.5rem;
 /* PICNIC CSS OVERRIDES */
 
 body {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -71,6 +73,7 @@ main {
   max-width: 45em;
   margin: $picnic-nav-height auto 0 auto;
   padding: $picnic-separation;
+  flex-grow: 1;
 }
 
 body > footer {
@@ -114,19 +117,14 @@ a.pseudo.button {
 
 /* SITE OVERRIDES */
 
-body.landing {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-body.landing main {
+section.landing {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 4rem;
 }
 
-body.landing main p {
+section.landing p {
   text-align: center;
 }
 
