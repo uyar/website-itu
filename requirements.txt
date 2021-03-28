@@ -12,7 +12,7 @@ cloudpickle==1.4.1        # via doit
 docutils==0.16            # via nikola
 doit==0.32.0              # via nikola
 idna==2.9                 # via requests
-lxml==4.5.0               # via nikola
+lxml==4.6.2               # via nikola
 mako==1.1.2               # via nikola
 markdown==3.2.1           # via nikola
 markupsafe==1.1.1         # via mako
@@ -26,7 +26,6 @@ pyrss2gen==1.1            # via nikola
 python-dateutil==2.8.1    # via nikola
 pytz==2020.1              # via babel
 requests==2.23.0          # via nikola
-ruamel.yaml.clib==0.2.0   # via ruamel.yaml
 ruamel.yaml==0.16.10      # via -r requirements.in
 six==1.14.0               # via python-dateutil
 unidecode==1.1.1          # via nikola
